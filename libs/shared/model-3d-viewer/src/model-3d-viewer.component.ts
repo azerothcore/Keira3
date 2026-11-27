@@ -6,6 +6,7 @@ import { Option, TableRow } from '@keira/shared/constants';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 import * as jquery from 'jquery';
+import { TranslatePipe } from '@ngx-translate/core';
 import { BehaviorSubject, catchError, filter, Observable, of, Subscription } from 'rxjs';
 import {
   CHAR_DISPLAYABLE_INVENTORY_TYPE,
@@ -29,7 +30,7 @@ declare const ZamModelViewer: any;
   selector: 'keira-model-3d-viewer',
   templateUrl: './model-3d-viewer.component.html',
   styleUrl: './model-3d-viewer.component.scss',
-  imports: [GenericOptionSelectorComponent, ReactiveFormsModule, FormsModule],
+  imports: [GenericOptionSelectorComponent, ReactiveFormsModule, FormsModule, TranslatePipe],
 })
 export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private readonly queryService = inject(MysqlQueryService);
@@ -44,6 +45,8 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   protected readonly genderControl = new FormControl<Gender>(Gender.MALE);
 
   protected readonly MODEL_TYPE_CHARACTER = MODEL_TYPE.CHARACTER;
+
+  protected readonly showOnCharacterControl = new FormControl<boolean>(false, { nonNullable: true });
 
   protected readonly backgroundColor = new FormControl<string>('#000000');
 
@@ -73,6 +76,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void {
     this.initRaceGenderControls();
+    this.initShowOnCharacterControl();
     this.setupViewer3D();
     this.resetModel3dElement();
     this.viewerDynamic();
@@ -198,16 +202,9 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   protected getModelType(itemInventoryType: InventoryType | undefined = this.itemInventoryType()): MODEL_TYPE | -1 {
     const viewerType = this.viewerType();
     if (viewerType === VIEWER_TYPE.ITEM) {
-      if (itemInventoryType && WEAPONS_INVENTORY_TYPE.includes(itemInventoryType)) {
-        return MODEL_TYPE.WEAPON;
-      }
-
-      if (itemInventoryType === InventoryType.HEAD) {
-        return MODEL_TYPE.HELMET;
-      }
-
-      if (itemInventoryType === InventoryType.SHOULDERS) {
-        return MODEL_TYPE.SHOULDER;
+      const standaloneModelType = this.getStandaloneItemModelType(itemInventoryType);
+      if (standaloneModelType !== undefined) {
+        return this.showOnCharacterControl.value ? MODEL_TYPE.CHARACTER : standaloneModelType;
       }
 
       if (itemInventoryType && CHAR_DISPLAYABLE_INVENTORY_TYPE.includes(itemInventoryType)) {
@@ -224,6 +221,26 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     return -1;
+  }
+
+  protected canShowOnCharacter(): boolean {
+    return this.viewerType() === VIEWER_TYPE.ITEM && this.getStandaloneItemModelType(this.itemInventoryType()) !== undefined;
+  }
+
+  private getStandaloneItemModelType(itemInventoryType: InventoryType | undefined): MODEL_TYPE | undefined {
+    if (itemInventoryType && WEAPONS_INVENTORY_TYPE.includes(itemInventoryType)) {
+      return MODEL_TYPE.WEAPON;
+    }
+
+    if (itemInventoryType === InventoryType.HEAD) {
+      return MODEL_TYPE.HELMET;
+    }
+
+    if (itemInventoryType === InventoryType.SHOULDERS) {
+      return MODEL_TYPE.SHOULDER;
+    }
+
+    return undefined;
   }
 
   /* istanbul ignore next */
@@ -298,6 +315,10 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
         this.show3Dmodel();
       }),
     );
+  }
+
+  private initShowOnCharacterControl(): void {
+    this.subscriptions.add(this.showOnCharacterControl.valueChanges.subscribe(() => this.show3Dmodel()));
   }
 
   private resetModel3dElement(): void {

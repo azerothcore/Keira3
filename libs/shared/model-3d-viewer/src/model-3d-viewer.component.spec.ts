@@ -8,6 +8,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
+import { TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { of } from 'rxjs';
 import { Model3DViewerComponent } from './model-3d-viewer.component';
@@ -16,7 +17,7 @@ import { CONTENT_WOTLK, Gender, InventoryType, MODEL_TYPE, Race, VIEWER_TYPE } f
 describe('Model3DViewerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalDirective, ReactiveFormsModule, GenericOptionSelectorComponent, Model3DViewerComponent],
+      imports: [ModalDirective, ReactiveFormsModule, GenericOptionSelectorComponent, Model3DViewerComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
@@ -207,10 +208,76 @@ describe('Model3DViewerComponent', () => {
       expect(component['getModelType'](InventoryType.FEET)).toBe(MODEL_TYPE.CHARACTER);
     });
 
+    it('returns CHARACTER for head, shoulders and weapons when shown on the character', () => {
+      const { component, fixture } = setup();
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
+      component['showOnCharacterControl'].setValue(true, { emitEvent: false });
+
+      expect(component['getModelType'](InventoryType.HEAD)).toBe(MODEL_TYPE.CHARACTER);
+      expect(component['getModelType'](InventoryType.SHOULDERS)).toBe(MODEL_TYPE.CHARACTER);
+      expect(component['getModelType'](InventoryType.TWO_HANDED_WEAPON)).toBe(MODEL_TYPE.CHARACTER);
+      expect(component['getModelType'](InventoryType.NECK)).toBe(-1);
+    });
+
     it('returns -1', () => {
       const { component, fixture } = setup();
       fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
       expect(component['getModelType'](InventoryType.NECK)).toBe(-1);
+    });
+  });
+
+  describe('show on character', () => {
+    const checkboxSelector = 'input[type="checkbox"]';
+
+    it('canShowOnCharacter', () => {
+      const { component, fixture } = setup();
+
+      fixture.componentRef.setInput('itemInventoryType', InventoryType.HEAD);
+      expect(component['canShowOnCharacter']()).toBe(true);
+      fixture.componentRef.setInput('itemInventoryType', InventoryType.SHOULDERS);
+      expect(component['canShowOnCharacter']()).toBe(true);
+      fixture.componentRef.setInput('itemInventoryType', InventoryType.WEAPON);
+      expect(component['canShowOnCharacter']()).toBe(true);
+      fixture.componentRef.setInput('itemInventoryType', InventoryType.CHEST);
+      expect(component['canShowOnCharacter']()).toBe(false);
+      fixture.componentRef.setInput('itemInventoryType', InventoryType.NECK);
+      expect(component['canShowOnCharacter']()).toBe(false);
+
+      fixture.componentRef.setInput('itemInventoryType', InventoryType.HEAD);
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.NPC);
+      expect(component['canShowOnCharacter']()).toBe(false);
+    });
+
+    it('shows the toggle and the race/gender selectors only when the item is shown on the character', () => {
+      const { component, fixture } = setup();
+      vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => undefined);
+      fixture.detectChanges();
+      const element: HTMLElement = fixture.nativeElement;
+
+      const checkbox = element.querySelector<HTMLInputElement>(checkboxSelector);
+      expect(checkbox).toBeTruthy();
+      expect(checkbox?.checked).toBe(false);
+      expect(element.querySelector('keira-generic-option-selector')).toBeNull();
+
+      checkbox?.click();
+      fixture.detectChanges();
+
+      expect(component['showOnCharacterControl'].value).toBe(true);
+      expect(element.querySelectorAll('keira-generic-option-selector').length).toBe(2);
+      expect(component['show3Dmodel']).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not show the toggle for items that are always shown on the character', () => {
+      const { component, fixture } = setup({
+        displayId: 2,
+        viewerType: VIEWER_TYPE.ITEM,
+        itemClass: 4,
+        itemInventoryType: InventoryType.CHEST,
+      });
+      vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => undefined);
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector(checkboxSelector)).toBeNull();
     });
   });
 
