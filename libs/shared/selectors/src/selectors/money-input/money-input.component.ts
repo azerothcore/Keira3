@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -6,7 +6,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Coin, joinMoney, splitMoney, toInteger } from './money';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-money-input',
   templateUrl: './money-input.component.html',
   styleUrls: ['./money-input.component.scss'],
