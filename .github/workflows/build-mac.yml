@@ -40,11 +40,3 @@ jobs:
 
       - name: electron:mac:ci
         run: npm run electron:mac:ci
-
-      - name: Upload binaries
-        if: github.event_name == 'push' && matrix.os == 'macos-15'
-        uses: actions/upload-artifact@v7
-        with:
-          name: Keira3-mac-arm64-${{ github.sha }}
-          path: release/*.dmg
-          if-no-files-found: error

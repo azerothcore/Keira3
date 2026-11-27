@@ -1,0 +1,70 @@
+on:
+  workflow_dispatch:
+
+name: Build Artifacts
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  check-ref:
+    name: Check the branch is master
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Refuse other branches
+        if: github.ref != 'refs/heads/master'
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          echo "::error::This workflow only builds master, but it was started on ${REF}"
+          exit 1
+
+  build:
+    needs: check-ref
+    name: Build the ${{ matrix.platform }} artifact
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux
+            os: ubuntu-24.04
+            script: electron:linux:ci
+            files: |
+              release/*.AppImage
+              release/*.deb
+              release/*.rpm
+              release/*.snap
+          - platform: mac-arm64
+            os: macos-15
+            script: electron:mac:ci
+            files: release/*.dmg
+          - platform: windows
+            os: windows-2025
+            script: electron:windows:ci
+            files: release/*.exe
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+      - name: Use Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --include=optional
+      - name: Build project
+        run: npm run ${{ matrix.script }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: Keira3-${{ matrix.platform }}-${{ github.sha }}
+          path: ${{ matrix.files }}
+          if-no-files-found: error
+          retention-days: 14
+          # the installers are already compressed, zipping them again only costs time
+          compression-level: 0

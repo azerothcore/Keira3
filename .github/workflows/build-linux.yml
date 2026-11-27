@@ -40,14 +40,3 @@ jobs:
         run: npm ci --include=optional
       - name: electron:linux:ci
         run: npm run electron:linux:ci
-      - name: Upload binaries
-        if: github.event_name == 'push' && matrix.os == 'ubuntu-24.04' && matrix.node-version == 24
-        uses: actions/upload-artifact@v7
-        with:
-          name: Keira3-linux-${{ github.sha }}
-          path: |
-            release/*.AppImage
-            release/*.deb
-            release/*.rpm
-            release/*.snap
-          if-no-files-found: error
