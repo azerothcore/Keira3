@@ -365,7 +365,7 @@ describe('CreatureText integration tests', () => {
   describe('The broadcast_text browser', () => {
     const broadcastText = { ...new BroadcastText(), ID: 25, LanguageID: 7, MaleText: 'Archers at the ready!' };
 
-    it('should copy the id, the language and the text into the selected row', () => {
+    it('should copy the id, the language and the text into the selected row, using the text as comment', () => {
       const { page, querySpy } = setup(false);
       querySpy.mockReturnValue(of([broadcastText]));
 
@@ -377,10 +377,11 @@ describe('CreatureText integration tests', () => {
       expect(page.getInputById('BroadcastTextId').value).toBe('25');
       expect(page.getInputById('Language').value).toBe('7');
       expect(page.getInputById('Text').value).toBe('Archers at the ready!');
+      expect(page.getInputById('comment').value).toBe('Archers at the ready!');
       page.expectDiffQueryToContain(
         'DELETE FROM `creature_text` WHERE (`CreatureID` = 1234) AND (`GroupID` IN (0));\n' +
           'INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES\n' +
-          "(1234, 0, 0, 'Archers at the ready!', 12, 7, 100, 0, 0, 0, 25, 0, '');",
+          "(1234, 0, 0, 'Archers at the ready!', 12, 7, 100, 0, 0, 0, 25, 0, 'Archers at the ready!');",
       );
     });
 

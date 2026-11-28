@@ -96,6 +96,23 @@ describe('CreatureTextService', () => {
       expect(service.newRows[0]).toEqual(expect.objectContaining({ BroadcastTextId: 25, Language: 7, Text: 'hello' }));
     });
 
+    it('should use the text as the comment of the selected row', () => {
+      const service = setupWithSelectedRow();
+
+      service.applyBroadcastText(broadcastText);
+
+      expect(service.newRows[0].comment).toBe('hello');
+    });
+
+    it('should replace the comment the selected row already had', () => {
+      const service = setupWithSelectedRow();
+      service.form.controls.comment.setValue('old comment');
+
+      service.applyBroadcastText(broadcastText);
+
+      expect(service.newRows[0].comment).toBe('hello');
+    });
+
     it('should leave the rest of the row alone', () => {
       const service = setupWithSelectedRow();
 
