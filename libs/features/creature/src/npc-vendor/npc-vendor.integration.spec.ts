@@ -275,6 +275,30 @@ describe('NpcVendor integration tests', () => {
       );
     });
 
+    it('clicking the Name column header should sort the rows by item name', async () => {
+      const names: Record<number, string> = { 0: 'Cheese', 1: 'Apple', 2: 'Bread' };
+      vi.spyOn(TestBed.inject(MysqlQueryService), 'getItemNameById').mockImplementation((itemId) => Promise.resolve(names[Number(itemId)]));
+      const { fixture, page } = setup(false);
+      const renderNames = async () => {
+        // whenStable alone resolves before the async pipes have rendered the item names
+        await new Promise((resolve) => setTimeout(resolve));
+        await fixture.whenStable();
+      };
+      const nameHeader = page.query<HTMLElement>('#editor-table .datatable-header-cell[title="Name"] .datatable-header-cell-label');
+      const getNames = () => [0, 1, 2].map((rowIndex) => page.getDatatableCell(rowIndex, 3).textContent?.trim());
+
+      await renderNames();
+      expect(getNames()).toEqual(['Cheese', 'Apple', 'Bread']);
+
+      page.clickElement(nameHeader);
+      await renderNames();
+      expect(getNames()).toEqual(['Apple', 'Bread', 'Cheese']);
+
+      page.clickElement(nameHeader);
+      await renderNames();
+      expect(getNames()).toEqual(['Cheese', 'Bread', 'Apple']);
+    });
+
     it('using the same row id for multiple rows should correctly show an error', () => {
       const { page } = setup(false);
       page.clickRowOfDatatable(2);

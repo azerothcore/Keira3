@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { GAME_TELE_CUSTOM_STARTING_ID, GAME_TELE_ID, GAME_TELE_TABLE, GameTele } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -10,7 +10,6 @@ import { WIKI_BASE_URL } from '@keira/shared/constants';
 import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-game-tele.component.html',
   imports: [
     FormsModule,

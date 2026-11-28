@@ -1,7 +1,7 @@
 # Conventions
 
 - Standalone components only — no NgModules. Every template dependency must be listed in `imports: [...]` as an individual declarable (`AsyncPipe`, `TranslatePipe`, `TooltipDirective`), never an umbrella module (`CommonModule`, `TranslateModule`, `TooltipModule`) — except where the library's declarables aren't standalone (`FormsModule`, `ReactiveFormsModule`, `NgxDatatableModule`, `UiSwitchModule`, `NgxSelectModule`, `ClipboardModule`).
-- `ChangeDetectionStrategy.OnPush` mandatory (ESLint: `@angular-eslint/prefer-on-push-component-change-detection`). App is zoneless (`provideZonelessChangeDetection()`); after async state mutation outside the form pipeline, call `changeDetectorRef.markForCheck()` (base `EditorService` already does this in `save`/`reload`).
+- Never set `changeDetection`: OnPush is the default since Angular 22. App is zoneless (`provideZonelessChangeDetection()`); after async state mutation outside the form pipeline, call `changeDetectorRef.markForCheck()` (base `EditorService` already does this in `save`/`reload`).
 - Angular Signals for cross-component reactive state (e.g. handler unsaved flags).
 - DI via `inject()`, not constructor injection.
 - Component selector prefix: `keira-` (kebab-case element / camelCase directive).

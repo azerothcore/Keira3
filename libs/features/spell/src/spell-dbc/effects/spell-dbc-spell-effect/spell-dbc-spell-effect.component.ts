@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, input } from '@angular/core';
+import { Component, Input, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   SPELL_DBC_APPLY_AURA_NAME,
@@ -14,7 +14,6 @@ import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-spell-effect',
   templateUrl: './spell-dbc-spell-effect.component.html',
   imports: [

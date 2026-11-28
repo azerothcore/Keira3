@@ -61,7 +61,6 @@ export default [
           type: 'attribute',
         },
       ],
-      '@angular-eslint/prefer-on-push-component-change-detection': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -85,12 +84,6 @@ export default [
           allow: ['warn', 'info', 'error'],
         },
       ],
-    },
-  },
-  {
-    files: ['**/*.spec.ts', '**/*.po.ts'],
-    rules: {
-      '@angular-eslint/prefer-on-push-component-change-detection': 'off',
     },
   },
   {

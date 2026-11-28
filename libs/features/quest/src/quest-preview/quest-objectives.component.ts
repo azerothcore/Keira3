@@ -1,12 +1,11 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { IconComponent } from '@keira/shared/base-editor-components';
 import { NpcOrGoObjective, ItemObjective, FactionRequirement } from './quest-objectives.model';
 
 @Component({
   selector: 'keira-quest-objectives',
   templateUrl: './quest-objectives.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IconComponent, AsyncPipe],
 })
 export class QuestObjectivesComponent {

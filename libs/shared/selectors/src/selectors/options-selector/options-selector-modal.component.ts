@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { TranslateDirective } from '@ngx-translate/core';
 import { UiSwitchModule } from 'ngx-ui-switch';
 
@@ -8,7 +8,6 @@ import { OptionsModalConfig } from './options-selector.model';
 import { OptionsSelectorService } from './options-selector.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-options-selector-modal',
   templateUrl: './options-selector-modal.component.html',
   styleUrls: ['./options-selector-modal.component.scss'],

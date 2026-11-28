@@ -1008,5 +1008,8 @@
     "NO_DATA": "没有可用的地图数据",
     "SHOW": "显示地图",
     "HIDE": "隐藏地图"
+  },
+  "MODEL_3D_VIEWER": {
+    "SHOW_ON_CHARACTER": "在角色上显示"
   }
 }

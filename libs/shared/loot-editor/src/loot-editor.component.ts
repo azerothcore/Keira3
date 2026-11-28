@@ -1,5 +1,5 @@
 /* istanbul ignore file */ // TODO: fix coverage
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { AsyncPipe } from '@angular/common';
@@ -17,7 +17,6 @@ import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ReferenceViewerComponent } from './reference-viewer.component';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-loot-editor',
   templateUrl: './loot-editor.component.html',
   styleUrls: ['./loot-editor.component.scss'],
@@ -63,7 +62,16 @@ export class LootEditorComponent<T extends LootTemplate> extends SubscriptionHan
           this.changeDetectorRef.markForCheck();
         });
       }),
+      this.editorService.form.valueChanges.subscribe(() => this.syncReferenceMinCount()),
     );
+  }
+
+  // The core ignores MinCount on reference rows and its startup check expects it to equal MaxCount
+  private syncReferenceMinCount(): void {
+    const { Reference, MinCount, MaxCount } = this.editorService.form.controls;
+    if (!this.editorService.loading && Reference.value !== 0 && MinCount.value !== MaxCount.value) {
+      MinCount.setValue(MaxCount.value);
+    }
   }
 
   isReference(row: LootTemplate): boolean {

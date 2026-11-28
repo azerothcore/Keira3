@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, computed } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GameTele } from '@keira/shared/acore-world-model';
@@ -11,7 +11,6 @@ import { QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { MapSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-conditions',
   templateUrl: './game-tele.component.html',
   imports: [TranslateDirective, FormsModule, ReactiveFormsModule, QueryOutputComponent, MapSelectorBtnComponent, MapViewerComponent],

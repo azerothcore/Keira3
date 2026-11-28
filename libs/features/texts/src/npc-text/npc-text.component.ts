@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { TranslateDirective } from '@ngx-translate/core';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
@@ -9,7 +9,6 @@ import { NpcText } from '@keira/shared/acore-world-model';
 import { NpcTextFieldsGroupComponent } from './npc-text-fields-group.component';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './npc-text.component.html',
   imports: [TopBarComponent, TranslateDirective, QueryOutputComponent, ReactiveFormsModule, NpcTextFieldsGroupComponent],
 })

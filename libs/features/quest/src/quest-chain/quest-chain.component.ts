@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
 import { CONDITION_SOURCE_TYPES } from '@keira/shared/acore-world-model';
@@ -9,7 +9,6 @@ import { EMPTY_QUEST_CHAIN_GRAPH, QuestChainGraph, QuestChainNode } from './ques
 import { QuestChainService } from './quest-chain.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-chain',
   templateUrl: './quest-chain.component.html',
   styleUrls: ['./quest-chain.component.scss'],

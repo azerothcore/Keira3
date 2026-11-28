@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { LootTemplateIdComponent } from '@keira/shared/base-abstract-classes';
 import { DisenchantLootTemplate } from '@keira/shared/acore-world-model';
 import { ItemHandlerService } from '../item-handler.service';
@@ -8,7 +8,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-disenchant-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template-id.component.html',
   imports: [TopBarComponent, TranslatePipe, TranslateDirective, LootEditorComponent],

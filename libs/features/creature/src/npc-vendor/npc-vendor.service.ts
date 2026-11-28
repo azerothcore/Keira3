@@ -66,4 +66,30 @@ export class NpcVendorService extends MultiRowEditorService<NpcVendor> {
   getItemExtendedCost(extendedCost: number): Promise<string> {
     return this.extendedCostCache(extendedCost);
   }
+
+  private readonly itemNamePromises = new Map<number, Promise<string>>();
+  private readonly itemNames = new Map<number, string>();
+
+  // The datatable comparator is synchronous, so the resolved names are kept for compareItemNames.
+  // Each promise is cached so that the async pipe always gets the same instance.
+  getItemName(item: number): Promise<string> {
+    let name = this.itemNamePromises.get(item);
+    if (!name) {
+      name = this.queryService.getItemNameById(item).then((itemName) => {
+        this.itemNames.set(item, itemName);
+        return itemName;
+      });
+      this.itemNamePromises.set(item, name);
+    }
+    return name;
+  }
+
+  override clearCache(): void {
+    super.clearCache();
+    this.itemNamePromises.clear();
+    this.itemNames.clear();
+  }
+
+  readonly compareItemNames = (_nameA: unknown, _nameB: unknown, rowA: NpcVendor, rowB: NpcVendor): number =>
+    (this.itemNames.get(rowA.item) ?? '').localeCompare(this.itemNames.get(rowB.item) ?? '');
 }

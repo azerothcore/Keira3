@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EMOTE, QuestOfferReward } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -12,7 +12,6 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestOfferRewardService } from './quest-offer-reward.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-offer-reward',
   templateUrl: './quest-offer-reward.component.html',
   styleUrls: ['./quest-offer-reward.component.scss'],

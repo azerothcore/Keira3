@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { SAI_TYPES } from '@keira/shared/acore-world-model';
 
 import { MysqlQueryService } from '@keira/shared/db-layer';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-top-bar',
   templateUrl: './sai-top-bar.component.html',
   imports: [],

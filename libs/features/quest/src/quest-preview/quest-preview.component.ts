@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IconComponent } from '@keira/shared/base-editor-components';
 import { QuestObjectivesComponent } from './quest-objectives.component';
@@ -16,7 +16,6 @@ import { from, Observable, of } from 'rxjs';
 export const QUEST_PREVIEW_DEBOUNCE_TIME = 300;
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-preview',
   templateUrl: './quest-preview.component.html',
   imports: [IconComponent, CollapseDirective, AsyncPipe, QuestObjectivesComponent, Model3DViewerComponent, MapViewerComponent],

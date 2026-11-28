@@ -332,6 +332,44 @@ describe('CreatureLootTemplate integration tests', () => {
       page.expectUniqueError();
     });
 
+    describe('MinCount of reference rows', () => {
+      it('should follow MaxCount and be read-only when Reference is not 0', () => {
+        const { page } = setup(false);
+        page.clickRowOfDatatable(1);
+        page.setInputValueById('MaxCount', 3);
+        expect(page.getInputById('MinCount').value).toBe('1');
+        expect(page.getInputById('MinCount').readOnly).toBe(false);
+
+        page.setInputValueById('Reference', 10);
+        page.detectChanges();
+        expect(page.getInputById('MinCount').value).toBe('3');
+        expect(page.getInputById('MinCount').readOnly).toBe(true);
+
+        page.setInputValueById('MaxCount', 5);
+        expect(page.getInputById('MinCount').value).toBe('5');
+
+        page.expectDiffQueryToContain(
+          'DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));\n' +
+            'INSERT INTO `creature_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+            '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+            "(1234, 1, 10, 100, 0, 1, 0, 5, 5, '');",
+        );
+      });
+
+      it('should not change MinCount when Reference is 0', () => {
+        const { page } = setup(false);
+        page.clickRowOfDatatable(1);
+        page.setInputValueById('MaxCount', 4);
+
+        page.expectDiffQueryToContain(
+          'DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (1));\n' +
+            'INSERT INTO `creature_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+            '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+            "(1234, 1, 0, 100, 0, 1, 0, 1, 4, '');",
+        );
+      });
+    });
+
     describe('Item icon and selector button visibility based on Reference field', () => {
       it('should display keira-icon when Reference is 0', () => {
         const { page } = setup(false);

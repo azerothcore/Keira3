@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TRAINER_TYPE, Trainer } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -10,7 +10,6 @@ import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor
 import { GenericOptionSelectorComponent } from '@keira/shared/selectors';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-trainer',
   templateUrl: './trainer.component.html',
   imports: [

@@ -43,8 +43,7 @@
     },
     "@nx/angular:component": {
       "style": "scss",
-      "standalone": true,
-      "changeDetection": "OnPush"
+      "standalone": true
     }
   },
   "useLegacyCache": true,

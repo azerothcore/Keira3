@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, input } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, input } from '@angular/core';
 import { ICON_SKILLS } from '@keira/shared/constants';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { IconService } from './icon.service';
@@ -7,7 +7,6 @@ import { IconService } from './icon.service';
   selector: 'keira-icon',
   templateUrl: './icon.component.html',
   styleUrls: ['./icon.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IconComponent extends SubscriptionHandler {
   private readonly service = inject(IconService);

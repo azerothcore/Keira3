@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   SPELL_DBC_ATTRIBUTES_FLAGS,
@@ -17,7 +17,6 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-flags',
   templateUrl: './spell-dbc-flags.component.html',
   imports: [FormsModule, ReactiveFormsModule, TranslateDirective, TranslatePipe, FlagsSelectorBtnComponent, TooltipDirective],

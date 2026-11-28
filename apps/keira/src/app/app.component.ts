@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { KEIRA3_REPO_URL, LATEST_RELEASE_API_URL } from '@keira/shared/constants';
 
 import { ToastrService } from 'ngx-toastr';
@@ -16,7 +16,6 @@ import { ElectronService } from '@keira/shared/common-services';
 import { SubscriptionHandler } from '@keira/shared/utils';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

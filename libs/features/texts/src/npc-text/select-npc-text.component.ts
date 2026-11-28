@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { NpcText, NPC_TEXT_CUSTOM_STARTING_ID, NPC_TEXT_TABLE, NPC_TEXT_ID } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -9,7 +9,6 @@ import { SelectNpcTextService } from './select-npc-text.service';
 import { NpcTextHandlerService } from './npc-text-handler.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-npc-text.component.html',
   imports: [
     TopBarComponent,

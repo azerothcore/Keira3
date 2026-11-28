@@ -1,0 +1,21 @@
+// MovementGeneratorType in AzerothCore's MotionMaster.h, as reported by SMART_EVENT_MOVEMENTINFORM
+export const SAI_MOTION_TYPE_NAMES: Record<number, string> = {
+  1: 'Random',
+  2: 'Waypoint',
+  3: 'Animal Random',
+  4: 'Confused',
+  5: 'Chase',
+  6: 'Home',
+  7: 'Flight',
+  8: 'Point',
+  9: 'Fleeing',
+  10: 'Distract',
+  11: 'Assistance',
+  12: 'Assistance Distract',
+  13: 'Timed Fleeing',
+  14: 'Follow',
+  15: 'Rotate',
+  16: 'Effect',
+  17: 'Escort',
+  18: 'Formation',
+};

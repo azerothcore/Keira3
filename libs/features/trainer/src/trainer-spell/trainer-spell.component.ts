@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TrainerSpell } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -13,7 +13,6 @@ import { TrainerHandlerService } from '../trainer-handler.service';
 import { TrainerSpellService } from './trainer-spell.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-trainer-spell',
   templateUrl: './trainer-spell.component.html',
   styleUrls: ['./trainer-spell.component.scss'],

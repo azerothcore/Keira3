@@ -1008,5 +1008,8 @@
     "NO_DATA": "No hay datos de mapa disponibles",
     "SHOW": "Mostrar mapa",
     "HIDE": "Ocultar mapa"
+  },
+  "MODEL_3D_VIEWER": {
+    "SHOW_ON_CHARACTER": "Mostrar en el personaje"
   }
 }

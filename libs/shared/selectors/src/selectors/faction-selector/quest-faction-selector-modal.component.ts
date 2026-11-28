@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { Faction, FACTION_SEARCH_FIELDS } from '@keira/shared/acore-world-model';
 import { FactionSearchService } from '../../search/faction-search.service';
@@ -9,7 +9,6 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-faction-selector-modal',
   templateUrl: './faction-selector-modal.component.html',
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateDirective, TranslatePipe],
