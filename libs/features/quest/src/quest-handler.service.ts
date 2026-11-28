@@ -5,6 +5,7 @@ import {
   CREATURE_QUESTSTARTER_TABLE,
   GAMEOBJECT_QUESTENDER_TABLE,
   GAMEOBJECT_QUESTSTARTER_TABLE,
+  QUEST_OFFER_REWARD_LOCALE_TABLE,
   QUEST_OFFER_REWARD_TABLE,
   QUEST_REQUEST_ITEMS_TABLE,
   QUEST_TEMPLATE_ADDON_TABLE,
@@ -29,6 +30,9 @@ export class QuestHandlerService extends HandlerService<QuestTemplate> {
   get isQuestOfferRewardUnsaved(): Signal<boolean> {
     return this.statusMap[QUEST_OFFER_REWARD_TABLE].asReadonly();
   }
+  get isQuestOfferRewardLocaleUnsaved(): Signal<boolean> {
+    return this.statusMap[QUEST_OFFER_REWARD_LOCALE_TABLE].asReadonly();
+  }
   get isQuestRequestItemsUnsaved(): Signal<boolean> {
     return this.statusMap[QUEST_REQUEST_ITEMS_TABLE].asReadonly();
   }
@@ -50,6 +54,7 @@ export class QuestHandlerService extends HandlerService<QuestTemplate> {
     [QUEST_TEMPLATE_ADDON_TABLE]: signal(false),
     [QUEST_TEMPLATE_LOCALE_TABLE]: signal(false),
     [QUEST_OFFER_REWARD_TABLE]: signal(false),
+    [QUEST_OFFER_REWARD_LOCALE_TABLE]: signal(false),
     [QUEST_REQUEST_ITEMS_TABLE]: signal(false),
     [CREATURE_QUESTSTARTER_TABLE]: signal(false),
     [CREATURE_QUESTENDER_TABLE]: signal(false),

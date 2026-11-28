@@ -283,6 +283,14 @@
                       </a>
                     </li>
                     <li>
+                      <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-offer-reward-locale'">
+                        {{ 'SIDEBAR.QUEST.QUEST_OFFER_REWARD_LOCALE' | translate }}
+                        @if (questHandlerService.isQuestOfferRewardLocaleUnsaved()) {
+                          <keira-unsaved-icon />
+                        }
+                      </a>
+                    </li>
+                    <li>
                       <a href="#" routerLinkActive="active" [routerLink]="'quest/quest-request-items'">
                         {{ 'SIDEBAR.QUEST.QUEST_REQUEST_ITEMS' | translate }}
                         @if (questHandlerService.isQuestRequestItemsUnsaved()) {

@@ -108,6 +108,7 @@
       "QUEST_TEMPLATE_ADDON": "Addon de Plantilla de Misión",
       "QUEST_TEMPLATE_LOCALE": "Traducción de Plantilla de Misión",
       "QUEST_OFFER_REWARD": "Recompensa por Ofrecimiento de la Misión",
+      "QUEST_OFFER_REWARD_LOCALE": "Traducción de Recompensa por Ofrecimiento de la Misión",
       "QUEST_REQUEST_ITEMS": "Items Requeridos para la Misión",
       "CREATURE_QUESTSTARTER": "Criatura para Iniciar la Misión",
       "CREATURE_QUESTENDER": "Criatura para Finalizar la Misión",

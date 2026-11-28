@@ -108,6 +108,7 @@
       "QUEST_TEMPLATE_ADDON": "Дополнение шаблона задания",
       "QUEST_TEMPLATE_LOCALE": "Локализация шаблона задания",
       "QUEST_OFFER_REWARD": "Награда за задание",
+      "QUEST_OFFER_REWARD_LOCALE": "Локализация награды за задание",
       "QUEST_REQUEST_ITEMS": "Запрос предметов задания",
       "CREATURE_QUESTSTARTER": "Существо-начинатель задания",
       "CREATURE_QUESTENDER": "Существо-завершатель задания",
