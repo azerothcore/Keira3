@@ -2,11 +2,13 @@ import { ChangeDetectorRef, Component, inject, input, OnChanges } from '@angular
 import { DTCFG } from '@keira/shared/config';
 
 import { AsyncPipe } from '@angular/common';
+import { Router } from '@angular/router';
 import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
 import { IconComponent } from '@keira/shared/base-editor-components';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SubscriptionHandler } from '@keira/shared/utils';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
+import { TranslatePipe } from '@ngx-translate/core';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { ReferenceViewerService } from './reference-viewer.service';
 
@@ -14,13 +16,14 @@ import { ReferenceViewerService } from './reference-viewer.service';
   selector: 'keira-reference-viewer',
   templateUrl: './reference-viewer.component.html',
   styleUrls: ['./loot-editor.component.scss'],
-  imports: [TooltipDirective, NgxDatatableModule, IconComponent, AsyncPipe],
+  imports: [TooltipDirective, NgxDatatableModule, IconComponent, AsyncPipe, TranslatePipe],
 })
 export class ReferenceViewerComponent extends SubscriptionHandler implements OnChanges {
   readonly referenceId = input.required<number>();
 
   private readonly service = inject(ReferenceViewerService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
   protected readonly queryService = inject(MysqlQueryService);
 
   protected readonly DTCFG = DTCFG;
@@ -54,6 +57,12 @@ export class ReferenceViewerComponent extends SubscriptionHandler implements OnC
         this.cdr.markForCheck();
       }),
     );
+  }
+
+  /** Opens this reference in the Reference Loot editor, through its select page that loads the given id. */
+  protected openReference(): void {
+    // skipLocationChange keeps the select page out of the history, otherwise going back would open the editor again.
+    void this.router.navigate(['other-loots/select-reference'], { queryParams: { id: this.referenceId() }, skipLocationChange: true });
   }
 
   protected isReference(row: ReferenceLootTemplate): boolean {

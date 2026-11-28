@@ -5,7 +5,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { TableRow } from '@keira/shared/constants';
 import { ReferenceLootTemplate } from '@keira/shared/acore-world-model';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { ReferenceViewerService } from './reference-viewer.service';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
@@ -29,18 +29,17 @@ describe('ReferenceViewerService', () => {
     return { service, queryService };
   };
 
-  it('should be created', (done) => {
+  it('should be created', async () => {
     const mockReferenceLoot: ReferenceLootTemplate[] = [new ReferenceLootTemplate()];
     const referenceId = 1234;
     const { service, queryService } = setup();
     const querySpy = vi.spyOn(queryService, 'query').mockImplementation(() => undefined);
     querySpy.mockReturnValue(of(mockReferenceLoot as TableRow[]));
 
-    service.getReferenceById(referenceId).subscribe((result) => {
-      expect(result).toEqual(mockReferenceLoot);
-      expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM reference_loot_template WHERE Entry = ${referenceId}`);
-      done();
-    });
+    const result = await firstValueFrom(service.getReferenceById(referenceId));
+
+    expect(result).toEqual(mockReferenceLoot);
+    expect(querySpy).toHaveBeenCalledTimes(1);
+    expect(querySpy).toHaveBeenCalledWith(`SELECT * FROM reference_loot_template WHERE Entry = ${referenceId}`);
   });
 });

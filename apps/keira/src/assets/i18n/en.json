@@ -579,7 +579,8 @@
     "GROUP_ID": "Set of loot definitions, check the wiki for more details",
     "MIN_COUNT": "The minimum number of copies of the item that can drop in a single loot. For references, this is ignored.",
     "MAX_COUNT": "The maximum number of copies of the item that can drop in a single loot. For references, this is the EXACT count value.",
-    "COMMENT": "A comment that is ignored by the core"
+    "COMMENT": "A comment that is ignored by the core",
+    "OPEN_REFERENCE": "Open in the Reference Loot editor"
   },
   "LOOT_TEMPLATE": {
     "SET_FIELD": "You have to set the field <strong>`{{ LOOT_FIELD }}`</strong> of <strong>{{ ENTITY_TABLE }}</strong> in order to enable this feature.",
