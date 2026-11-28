@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   CREATURE_AI_NAME,
@@ -22,6 +23,7 @@ import {
 } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
+import { SqliteQueryService } from '@keira/shared/db-layer';
 import {
   BooleanOptionSelectorComponent,
   CreatureSelectorBtnComponent,
@@ -34,6 +36,7 @@ import {
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { nameFromControl } from '../utils/name-from-control';
 import { CreatureTemplateService } from './creature-template.service';
 
 @Component({
@@ -54,6 +57,7 @@ import { CreatureTemplateService } from './creature-template.service';
     GenericOptionSelectorComponent,
     BooleanOptionSelectorComponent,
     MoneyInputComponent,
+    AsyncPipe,
   ],
 })
 export class CreatureTemplateComponent extends SingleRowEditorComponent<CreatureTemplate> {
@@ -79,4 +83,10 @@ export class CreatureTemplateComponent extends SingleRowEditorComponent<Creature
 
   protected override readonly editorService = inject(CreatureTemplateService);
   readonly handlerService = inject(CreatureHandlerService);
+  private readonly sqliteQueryService = inject(SqliteQueryService);
+
+  // creature_template.faction is a FactionTemplate.dbc id
+  protected readonly factionName$ = nameFromControl(this.editorService.form.controls.faction, (id) =>
+    this.sqliteQueryService.getFactionNameById(id),
+  );
 }

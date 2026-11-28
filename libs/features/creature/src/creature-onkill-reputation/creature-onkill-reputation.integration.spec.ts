@@ -52,11 +52,16 @@ describe('CreatureOnkillReputation integration tests', () => {
 
     vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
+    const getFactionNameByNameIdSpy = vi
+      .spyOn(sqliteQueryService, 'getFactionNameByNameId')
+      .mockImplementation((factionId) => Promise.resolve(`Mock Faction ${factionId}`));
+
     const fixture = TestBed.createComponent(CreatureOnkillReputationComponent);
     const page = new CreatureOnkillReputationPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-    return { fixture, queryService, querySpy, handlerService, page };
+    return { fixture, queryService, querySpy, handlerService, page, getFactionNameByNameIdSpy };
   }
 
   describe('Creating new', () => {
@@ -128,6 +133,23 @@ describe('CreatureOnkillReputation integration tests', () => {
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
+    });
+
+    it('shows the names of the reputation factions next to their fields', async () => {
+      const { page, getFactionNameByNameIdSpy } = setup(false);
+      await page.whenReady();
+      expect(page.query('#RewOnKillRepFaction1Name', false)).toBeNull();
+      expect(page.query('#RewOnKillRepFaction2Name', false)).toBeNull();
+
+      page.setInputValueById('RewOnKillRepFaction1', 72);
+      page.setInputValueById('RewOnKillRepFaction2', 47);
+
+      await vi.waitFor(() => {
+        expect(page.query('#RewOnKillRepFaction1Name').textContent).toContain('Mock Faction 72');
+        expect(page.query('#RewOnKillRepFaction2Name').textContent).toContain('Mock Faction 47');
+      });
+      expect(getFactionNameByNameIdSpy).toHaveBeenCalledWith(72);
+      expect(getFactionNameByNameIdSpy).toHaveBeenCalledWith(47);
     });
 
     it('changing values should correctly update the queries', () => {
