@@ -16,6 +16,7 @@ export const MOCK_ID = 'id';
 export const MOCK_ID_2 = 'guid';
 export const MOCK_NAME = 'name';
 export const MOCK_EXTRA_ID = 'extra_id';
+export const MOCK_EXTRA_ID_2 = 'extra_id_2';
 
 export class MockEntity extends TableRow {
   id: number = 0;
@@ -29,6 +30,10 @@ export class MockEntityWithGuidString extends MockEntity {
 
 export class MockEntityExtra extends MockEntity {
   extra_id?: any = 0;
+}
+
+export class MockEntityTwoExtra extends MockEntityExtra {
+  extra_id_2?: any = 0;
 }
 
 @Service()
@@ -120,6 +125,21 @@ export class MockMultiRowEditorExtraService extends MultiRowEditorService<MockEn
   protected override readonly _entityIdField = MOCK_ID;
   protected override readonly _entitySecondIdField = MOCK_ID_2;
   protected override readonly _entityExtraIdField = MOCK_EXTRA_ID;
+
+  constructor() {
+    super();
+    this.init();
+  }
+}
+
+@Service()
+export class MockMultiRowEditorTwoExtraService extends MultiRowEditorService<MockEntityTwoExtra> {
+  protected override readonly handlerService = inject(MockHandlerService);
+  protected override readonly _entityClass = MockEntityTwoExtra;
+  protected override readonly _entityTable = MOCK_TABLE;
+  protected override readonly _entityIdField = MOCK_ID;
+  protected override readonly _entitySecondIdField = MOCK_ID_2;
+  protected override readonly _entityExtraIdField = [MOCK_EXTRA_ID, MOCK_EXTRA_ID_2];
 
   constructor() {
     super();

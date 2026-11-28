@@ -1,6 +1,7 @@
 import { Service, inject } from '@angular/core';
 import { LootEditorIdService } from '@keira/shared/base-abstract-classes';
 import {
+  CREATURE_LOOT_TEMPLATE_EXTRA_IDS,
   CREATURE_LOOT_TEMPLATE_TABLE,
   CREATURE_TEMPLATE_ID,
   CREATURE_TEMPLATE_LOOT_ID,
@@ -14,6 +15,7 @@ export class CreatureLootTemplateService extends LootEditorIdService<CreatureLoo
   protected override readonly handlerService = inject(CreatureHandlerService);
   protected override _entityClass = CreatureLootTemplate;
   protected override _entityTable = CREATURE_LOOT_TEMPLATE_TABLE;
+  protected override readonly _entityExtraIdField = CREATURE_LOOT_TEMPLATE_EXTRA_IDS;
   protected override _entityTemplateTable = CREATURE_TEMPLATE_TABLE;
   protected override _entityTemplateIdField = CREATURE_TEMPLATE_ID;
   protected override _entityTemplateLootField = CREATURE_TEMPLATE_LOOT_ID;

@@ -34,6 +34,15 @@ interface MockThreeKeysRow extends TableRow {
   name: string;
 }
 
+// Mirrors creature_loot_template: `Item` is told apart by both `Reference` and `GroupId`.
+interface MockLootRow extends TableRow {
+  Entry: number;
+  Item: number;
+  Reference: number;
+  GroupId: number;
+  Chance: number;
+}
+
 interface MockTwoKeysComplexRow extends TableRow {
   pk11: number;
   pk12: number;
@@ -648,6 +657,74 @@ describe('MysqlQueryService', () => {
             'DELETE FROM `my_table` WHERE (`pk1` = 1234) AND (`pk2` IN (0));\n' +
               'INSERT INTO `my_table` (`pk1`, `pk2`, `pk3`, `name`) VALUES\n' +
               "(1234, 0, 1, 'first');\n",
+          );
+        });
+      });
+
+      describe('using several extra id fields (like the creature_loot_template primary key)', () => {
+        const extraKeys = ['Reference', 'GroupId'];
+
+        // Item 0 shows up three times: twice with the same Reference in different groups and once with another Reference.
+        const lootRows: MockLootRow[] = [
+          { Entry: 69, Item: 0, Reference: 20002, GroupId: 0, Chance: 100 },
+          { Entry: 69, Item: 0, Reference: 20002, GroupId: 1, Chance: 30 },
+          { Entry: 69, Item: 0, Reference: 11111, GroupId: 0, Chance: 0.2 },
+          { Entry: 69, Item: 50432, Reference: 0, GroupId: 0, Chance: 90 },
+        ];
+
+        it('should not report a change when nothing changed', () => {
+          const { service } = setup();
+          expect(service.getDiffDeleteInsertTwoKeysQuery('loot', 'Entry', 'Item', lootRows, lootRows, extraKeys)).toEqual('');
+        });
+
+        it('should keep every row sharing the Item when one of them is edited', () => {
+          const { service } = setup();
+          const newRows = lootRows.map((row) => ({ ...row }));
+          newRows[1].Chance = 50;
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery('loot', 'Entry', 'Item', lootRows, newRows, extraKeys)).toEqual(
+            'DELETE FROM `loot` WHERE (`Entry` = 69) AND (`Item` IN (0));\n' +
+              'INSERT INTO `loot` (`Entry`, `Item`, `Reference`, `GroupId`, `Chance`) VALUES\n' +
+              '(69, 0, 20002, 0, 100),\n' +
+              '(69, 0, 20002, 1, 50),\n' +
+              '(69, 0, 11111, 0, 0.2);\n',
+          );
+        });
+
+        it('should keep the other rows sharing the Item when one of them is deleted', () => {
+          const { service } = setup();
+          const newRows = [lootRows[0], lootRows[1], lootRows[3]].map((row) => ({ ...row }));
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery('loot', 'Entry', 'Item', lootRows, newRows, extraKeys)).toEqual(
+            'DELETE FROM `loot` WHERE (`Entry` = 69) AND (`Item` IN (0));\n' +
+              'INSERT INTO `loot` (`Entry`, `Item`, `Reference`, `GroupId`, `Chance`) VALUES\n' +
+              '(69, 0, 20002, 0, 100),\n' +
+              '(69, 0, 20002, 1, 30);\n',
+          );
+        });
+
+        it('should treat a change of any extra key as a different row', () => {
+          const { service } = setup();
+          const newRows = lootRows.map((row) => ({ ...row }));
+          newRows[3].GroupId = 2;
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery('loot', 'Entry', 'Item', lootRows, newRows, extraKeys)).toEqual(
+            'DELETE FROM `loot` WHERE (`Entry` = 69) AND (`Item` IN (50432));\n' +
+              'INSERT INTO `loot` (`Entry`, `Item`, `Reference`, `GroupId`, `Chance`) VALUES\n' +
+              '(69, 50432, 0, 2, 90);\n',
+          );
+        });
+
+        it('should add a row with an Item already used in another group', () => {
+          const { service } = setup();
+          const newRows = lootRows.map((row) => ({ ...row }));
+          newRows.push({ Entry: 69, Item: 50432, Reference: 0, GroupId: 1, Chance: 5 });
+
+          expect(service.getDiffDeleteInsertTwoKeysQuery('loot', 'Entry', 'Item', lootRows, newRows, extraKeys)).toEqual(
+            'DELETE FROM `loot` WHERE (`Entry` = 69) AND (`Item` IN (50432));\n' +
+              'INSERT INTO `loot` (`Entry`, `Item`, `Reference`, `GroupId`, `Chance`) VALUES\n' +
+              '(69, 50432, 0, 0, 90),\n' +
+              '(69, 50432, 0, 1, 5);\n',
           );
         });
       });

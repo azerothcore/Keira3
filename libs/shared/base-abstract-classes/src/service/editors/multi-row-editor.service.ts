@@ -34,7 +34,16 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   protected abstract override readonly _entityTable: string;
   protected abstract override readonly _entityIdField: string | undefined;
   protected abstract readonly _entitySecondIdField: string;
-  protected readonly _entityExtraIdField: string | undefined = undefined;
+  /** One or more fields that, together with `_entitySecondIdField`, identify a row when the secondary key alone isn't unique. */
+  protected readonly _entityExtraIdField: string | string[] | undefined = undefined;
+
+  private get extraIdFields(): string[] {
+    if (!this._entityExtraIdField) {
+      return [];
+    }
+
+    return Array.isArray(this._entityExtraIdField) ? this._entityExtraIdField : [this._entityExtraIdField];
+  }
 
   protected override init(): void {
     super.init();
@@ -48,12 +57,10 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
       }
     }
 
-    if (this._entityExtraIdField) {
-      const [entitySecondIdField, extraIdField] = `${id}`.split('_');
-      console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${entitySecondIdField} and ${extraIdField}`);
-    } else {
-      console.error(`getRowIndex() failed in finding row having ${this._entitySecondIdField} ${id}`);
-    }
+    const keyFields = [this._entitySecondIdField, ...this.extraIdFields];
+    const keyValues = `${id}`.split('_');
+    const keyDescription = keyFields.map((field, i) => `${field} ${keyValues[i]}`).join(' and ');
+    console.error(`getRowIndex() failed in finding row having ${keyDescription}`);
 
     return 0;
   }
@@ -203,16 +210,16 @@ export abstract class MultiRowEditorService<T extends TableRow> extends EditorSe
   }
 
   private getNewRowId(row: T): string | number {
-    if (this._entityExtraIdField) {
-      return `${row[this._entitySecondIdField]}_${row[this._entityExtraIdField]}`;
+    if (this.extraIdFields.length > 0) {
+      return [this._entitySecondIdField, ...this.extraIdFields].map((field) => row[field]).join('_');
     }
 
     return row[this._entitySecondIdField];
   }
 
   private getNewRowIdForm(rowControls: FormGroup<ModelForm<T>>['controls']): string | number {
-    if (this._entityExtraIdField) {
-      return `${rowControls[this._entitySecondIdField].value}_${rowControls[this._entityExtraIdField].value}`;
+    if (this.extraIdFields.length > 0) {
+      return [this._entitySecondIdField, ...this.extraIdFields].map((field) => rowControls[field].value).join('_');
     }
 
     return rowControls[this._entitySecondIdField].value;
