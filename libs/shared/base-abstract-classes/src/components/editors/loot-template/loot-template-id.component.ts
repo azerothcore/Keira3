@@ -1,4 +1,4 @@
-/* istanbul ignore file */ // TODO: fix coverage
+/* v8 ignore file -- TODO: fix coverage */
 import { Directive, OnInit } from '@angular/core';
 import { QueryError } from 'mysql2';
 

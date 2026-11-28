@@ -40,7 +40,7 @@ export class AppComponent extends SubscriptionHandler implements OnInit {
   }
 
   private handleSqliteTest(): void {
-    /* istanbul ignore next */
+    /* v8 ignore next */
     if (this.electronService.isElectron()) {
       this.subscriptions.push(
         this.sqliteQueryService

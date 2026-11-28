@@ -1,4 +1,4 @@
-/* istanbul ignore file */
+/* v8 ignore file */
 import { Service, inject, signal } from '@angular/core';
 import { TableRow, StringKeys } from '@keira/shared/constants';
 import { MysqlQueryService } from '@keira/shared/db-layer';

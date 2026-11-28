@@ -2,7 +2,7 @@ import { Service } from '@angular/core';
 
 @Service()
 export class LocationService {
-  /* istanbul ignore next */
+  /* v8 ignore next */
   reload() {
     location.reload();
   }

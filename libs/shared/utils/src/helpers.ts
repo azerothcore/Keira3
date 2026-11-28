@@ -25,14 +25,14 @@ export function getPartial<T>(input: T | Partial<T>, fields: string[]): Partial<
   return output;
 }
 
-/* istanbul ignore next */ // TODO: fix coverage
+/* v8 ignore next -- TODO: fix coverage */
 export function getEnumKeys(enumInput: { [s: number]: string }): number[] {
   return Object.keys(enumInput)
     .filter((k) => !isNaN(Number(k)))
     .map((k) => +k);
 }
 
-/* istanbul ignore next */ // TODO: fix coverage
+/* v8 ignore next -- TODO: fix coverage */
 export const compareObjFn = (a: object, b: object) => JSON.stringify(a) === JSON.stringify(b);
 
 export const UNDEFINED_PROMISE: Promise<undefined> = Promise.resolve(undefined);

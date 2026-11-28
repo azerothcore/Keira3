@@ -13,7 +13,7 @@ export class Model3DViewerService {
    * @param {WoWModel|CharacterOptions} model: A json representation of a character
    * @returns {Promise<WowModelViewer>}
    */
-  /* istanbul ignore next */
+  /* v8 ignore next */
   async generateModels(
     aspect: number,
     containerSelector: string,

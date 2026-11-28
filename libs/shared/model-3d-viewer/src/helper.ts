@@ -1,4 +1,4 @@
-/* istanbul ignore file */
+/* v8 ignore file */
 
 import { CHARACTER_PART, CharacterOptions, CONTENT_WOTLK, Gender, MODEL_TYPE, NOT_DISPLAYED_SLOTS, SLOTS } from './model-3d-viewer.model';
 

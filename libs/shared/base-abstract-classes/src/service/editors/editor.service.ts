@@ -22,7 +22,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected _form!: FormGroup<ModelForm<T>>;
   protected _error: QueryError | undefined;
 
-  /* istanbul ignore next */ // TODO: fix coverage
+  /* v8 ignore next -- TODO: fix coverage */
   get loadedEntityId(): string {
     return typeof this._loadedEntityId === 'object' ? JSON.stringify(this._loadedEntityId) : String(this._loadedEntityId);
   }
@@ -57,7 +57,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
     this.fields = this.getClassAttributes(this._entityClass);
   }
 
-  /* istanbul ignore next */ // TODO: fix coverage
+  /* v8 ignore next -- TODO: fix coverage */
   clearCache(): void {
     this.queryService.clearCache();
   }
@@ -66,7 +66,7 @@ export abstract class EditorService<T extends TableRow> extends SubscriptionHand
   protected abstract updateFullQuery(): void;
   protected abstract onReloadSuccessful(data: T[], id: string | number): void;
 
-  /* istanbul ignore next */ // TODO: fix coverage
+  /* v8 ignore next -- TODO: fix coverage */
   protected updateEditorStatus(): void {
     if (!this.handlerService.statusMap[this._entityTable]) {
       this.handlerService.statusMap[this._entityTable] = signal(false);

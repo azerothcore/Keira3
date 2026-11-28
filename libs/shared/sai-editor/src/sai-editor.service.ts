@@ -121,7 +121,7 @@ export class SaiEditorService extends MultiRowComplexKeyEditorService<SmartScrip
     return this.saiCommentGeneratorService.generateComment(
       structuredClone(this._newRows),
       { ...row },
-      /* istanbul ignore next */
+      /* v8 ignore next */
       this.handlerService.getName() ? await lastValueFrom(this.handlerService.getName() as Observable<string>) : '',
     );
   }

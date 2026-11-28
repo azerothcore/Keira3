@@ -4,7 +4,7 @@ import { DTCFG } from '@keira/shared/config';
 import { ChangeDetectorRef, inject } from '@angular/core';
 import { SearchService } from '../../service/select/search.service';
 
-/* istanbul ignore next */ // TODO: fix coverage
+/* v8 ignore next -- TODO: fix coverage */
 export abstract class SelectComplexKeyComponent<T extends TableRow> {
   readonly DTCFG = DTCFG;
   readonly WIKI_BASE_URL = WIKI_BASE_URL;

@@ -125,21 +125,21 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
         .get(this.getContentPathUrl(inventoryType))
         .pipe(
           catchError(
-            /* istanbul ignore next */
+            /* v8 ignore next */
             () => {
-              /* istanbul ignore next */
+              /* v8 ignore next */
               this.sqliteQueryService.getItemDisplayInfoByItemId(entry as number).then((rows) => {
                 if (rows.length) {
                   this.generate3Dmodel(modelType, rows[0].ItemDisplayInfoID, CONTENT_WOTLK);
                 }
               });
-              /* istanbul ignore next */
+              /* v8 ignore next */
               return of(null);
             },
           ),
         )
         .subscribe((result) => {
-          /* istanbul ignore next */
+          /* v8 ignore next */
           if (result === null) {
             return;
           }
@@ -149,7 +149,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     );
   }
 
-  /* istanbul ignore next */ // TODO: fix coverage
+  /* v8 ignore next -- TODO: fix coverage */
   private generate3Dmodel(
     modelType = this.getModelType(),
     displayId: number = this.displayId(),
@@ -184,7 +184,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     this.model3DViewerService.generateModels(1, `#model_3d_${this.uniqueId}`, model, contentPath).then((WoWModel) => {
-      /* istanbul ignore next */
+      /* v8 ignore next */
       this.models3D.push(WoWModel);
       this.mutex3D = false;
     });
@@ -242,7 +242,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
     return undefined;
   }
 
-  /* istanbul ignore next */
+  /* v8 ignore next */
   private setupViewer3D(): void {
     if (!this.windowRef.jQuery) {
       this.windowRef.jQuery = jquery.default;
@@ -272,7 +272,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
   private viewerDynamic(): void {
     this.subscriptions.add(
       this.loadedViewer$.pipe(filter((loadedViewr) => loadedViewr)).subscribe(
-        /* istanbul ignore next */
+        /* v8 ignore next */
         () => {
           this.show3Dmodel();
         },
@@ -302,7 +302,7 @@ export class Model3DViewerComponent implements OnInit, OnDestroy, OnChanges {
           return;
         }
 
-        /* istanbul ignore next */
+        /* v8 ignore next */
         const prevValue = !this.genderControl.value ? 1 : 0;
         this.CREATURE_RACE.set(
           CREATURE_RACE_OPTION_ICON.map((option) => ({

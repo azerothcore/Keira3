@@ -5,7 +5,7 @@ import { KEIRA_APP_CONFIG_TOKEN, KeiraAppConfig } from '@keira/shared/config';
 import { TableRow } from '@keira/shared/constants';
 import { Observable, Subscriber } from 'rxjs';
 
-/* istanbul ignore next */ // Note: will be tested in e2e
+/* v8 ignore next -- Note: will be tested in e2e */
 @Service()
 export class SqliteService {
   private electronService = inject(ElectronService);
@@ -16,7 +16,7 @@ export class SqliteService {
   constructor() {
     const KEIRA_APP_CONFIG = inject<KeiraAppConfig>(KEIRA_APP_CONFIG_TOKEN);
 
-    /* istanbul ignore next */
+    /* v8 ignore next */
     if (this.electronService.isElectron()) {
       const sqlite = window.require('sqlite3');
       this.db = new sqlite.Database(KEIRA_APP_CONFIG.sqlitePath, sqlite.OPEN_READONLY, (error: unknown) => {
@@ -32,8 +32,8 @@ export class SqliteService {
     return new Observable<T[]>((subscriber) => {
       if (this.db) {
         this.db.all(queryString, this.getQueryCallback(subscriber));
-        /* istanbul ignore else */
-      } /* istanbul ignore next */ else if (this.electronService.isElectron()) {
+        /* v8 ignore else */
+      } /* v8 ignore next */ else if (this.electronService.isElectron()) {
         console.error(`sqite db was not defined when trying to run query: ${queryString}`);
       }
     });

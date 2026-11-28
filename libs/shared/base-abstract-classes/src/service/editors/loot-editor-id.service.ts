@@ -1,4 +1,4 @@
-/* istanbul ignore file */ // TODO: fix coverage
+/* v8 ignore file -- TODO: fix coverage */
 
 import { LOOT_TEMPLATE_ID, LOOT_TEMPLATE_ID_2, LootTemplate } from '@keira/shared/acore-world-model';
 import { Observable } from 'rxjs';
