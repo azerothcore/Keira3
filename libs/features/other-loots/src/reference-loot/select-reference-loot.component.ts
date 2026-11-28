@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import {
   LOOT_TEMPLATE_ID,
@@ -26,10 +27,20 @@ import { CreateComponent, HighlightjsWrapperComponent, TopBarComponent } from '@
     NgxDatatableModule,
   ],
 })
-export class SelectReferenceLootComponent extends SelectComponent<ReferenceLootTemplate> {
+export class SelectReferenceLootComponent extends SelectComponent<ReferenceLootTemplate> implements OnInit {
   readonly entityTable = REFERENCE_LOOT_TEMPLATE_TABLE;
   readonly entityIdField = LOOT_TEMPLATE_ID;
   readonly customStartingId = REFERENCE_LOOT_TEMPLATE_CUSTOM_STARTING_ID;
   readonly selectService = inject(SelectReferenceLootService);
   readonly handlerService = inject(ReferenceLootHandlerService);
+  private readonly activatedRoute = inject(ActivatedRoute);
+
+  /** Lets other screens open a reference directly, e.g. the read-only reference viewer of a creature loot. */
+  ngOnInit(): void {
+    const { id } = this.activatedRoute.snapshot.queryParams;
+
+    if (id !== undefined) {
+      this.handlerService.select(false, Number(id), this.entityTable);
+    }
+  }
 }

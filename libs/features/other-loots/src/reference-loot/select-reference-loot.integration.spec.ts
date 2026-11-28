@@ -2,7 +2,7 @@ import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { MysqlQueryService } from '@keira/shared/db-layer';
 import { SelectPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -135,5 +135,25 @@ describe('SelectReferenceLoot integration tests', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['other-loots/reference']);
     // Note: this is different than in other editors
     expect(page.topBar.innerText).toContain(`Editing: reference_loot_template (${results[0].Entry})`);
+  });
+
+  describe('opening a reference via query params', () => {
+    it('should open the given reference in the Reference Loot editor', async () => {
+      TestBed.overrideProvider(ActivatedRoute, { useValue: { snapshot: { queryParams: { id: '35009' } } } });
+      const { fixture, navigateSpy, page } = setup();
+      await fixture.whenStable();
+
+      expect(navigateSpy).toHaveBeenCalledExactlyOnceWith(['other-loots/reference']);
+      expect(TestBed.inject(ReferenceLootHandlerService).selected).toBe('35009');
+      expect(page.topBar.innerText).toContain('Editing: reference_loot_template (35009)');
+    });
+
+    it('should not open any reference when no id is given', async () => {
+      const { fixture, navigateSpy } = setup();
+      await fixture.whenStable();
+
+      expect(navigateSpy).not.toHaveBeenCalled();
+      expect(TestBed.inject(ReferenceLootHandlerService).selected).toBeUndefined();
+    });
   });
 });
