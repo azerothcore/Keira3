@@ -52,6 +52,8 @@
     "USERNAME": "Usuario",
     "PASSWORD": "Contraseña",
     "DATABASE": "Base de Datos",
+    "CONNECT_TIMEOUT": "Tiempo de espera (ms)",
+    "CONNECT_TIMEOUT_TOOLTIP": "Cuánto tiempo esperar a que el servidor de base de datos acepte la conexión, en milisegundos. Predeterminado: 10000",
     "USE_SSL": "Usar SSL/TLS",
     "SSL_TOOLTIP": "Requerido para servidores con require_secure_transport=ON",
     "USE_SSH_TUNNEL": "Túnel SSH",
