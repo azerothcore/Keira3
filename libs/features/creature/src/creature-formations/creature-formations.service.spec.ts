@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -10,7 +11,7 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureFormationsService } from './creature-formations.service';
 
-describe('CreatureSpawnService', () => {
+describe('CreatureFormationsService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       providers: [
@@ -30,5 +31,19 @@ describe('CreatureSpawnService', () => {
   it('should be created', () => {
     const service: CreatureFormationsService = TestBed.inject(CreatureFormationsService);
     expect(service).toBeTruthy();
+  });
+
+  it('selectQuery should load the formations of every spawn of the creature', () => {
+    const service: CreatureFormationsService = TestBed.inject(CreatureFormationsService);
+    const querySpy = vi.spyOn(TestBed.inject(MysqlQueryService), 'query').mockImplementation(() => undefined);
+    const id = 123;
+
+    service.selectQuery(id);
+
+    expect(querySpy).toHaveBeenCalledWith(
+      'SELECT f.* FROM creature_formations AS f WHERE f.leaderGUID IN (' +
+        'SELECT f2.leaderGUID FROM creature_formations AS f2 ' +
+        `INNER JOIN creature AS c ON c.guid IN (f2.leaderGUID, f2.memberGUID) WHERE c.id = ${id}) ORDER BY f.leaderGUID, f.memberGUID`,
+    );
   });
 });
