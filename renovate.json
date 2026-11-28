@@ -3,6 +3,7 @@
   "extends": ["config:recommended"],
   "timezone": "Europe/Amsterdam",
   "minimumReleaseAge": "3 days",
+  "labels": ["dependencies"],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
