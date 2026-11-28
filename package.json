@@ -101,6 +101,7 @@
     "@typescript-eslint/eslint-plugin": "8.74.0",
     "@typescript-eslint/parser": "8.74.0",
     "@vitest/coverage-v8": "5.1.1",
+    "angular-eslint": "22.8.0",
     "bootstrap": "5.3.9",
     "conventional-changelog-cli": "4.1.0",
     "cross-env": "10.1.0",
