@@ -39,20 +39,16 @@ export const ITEM_CONSTANTS = {
     ammo: ['Adds %d damage per second', 'Adds %d %s damage per second', '+ %d damage per second', '+ %d %s damage per second'],
   },
   socketBonus: 'Socket Bonus: %s', // ITEM_SOCKET_BONUS
-  socket: [
-    'Meta Socket',
-    'Red Socket',
-    'Yellow Socket',
-    'Blue Socket',
-    // -1 => 'Prismatic Socket' // TODO
-  ],
+  socket: ['Meta Socket', 'Red Socket', 'Yellow Socket', 'Blue Socket', 'Prismatic Socket'],
   gemColors: [
     // *_GEM
     'meta',
     'red',
     'yellow',
     'blue',
+    'prismatic',
   ],
+  prismaticSocketId: 4,
   gemConditions: {
     // ENCHANT_CONDITION_* in GlobalStrings.lua
     2: 'less than %s %s gems;',

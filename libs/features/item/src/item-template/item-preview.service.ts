@@ -1113,10 +1113,17 @@ export class ItemPreviewService {
       }
 
       let colorId = 0;
+      let colorCount = 0;
       for (let i = 0; i < 4; i++) {
         if (socketColor & (1 << i)) {
           colorId = i;
+          colorCount++;
         }
+      }
+
+      // a socket with more than one color accepts gems of any of them, like a prismatic socket
+      if (colorCount > 1) {
+        colorId = ITEM_CONSTANTS.prismaticSocketId;
       }
 
       socketText += `<br><span class="socket-${ITEM_CONSTANTS.gemColors[colorId]} q0 socket${colorId}">${ITEM_CONSTANTS.socket[colorId]}</span>`;
