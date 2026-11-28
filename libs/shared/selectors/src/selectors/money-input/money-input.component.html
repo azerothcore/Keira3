@@ -1,0 +1,16 @@
+@for (coin of coins; track coin) {
+  <input
+    type="text"
+    inputmode="numeric"
+    autocomplete="off"
+    class="form-control form-control-sm money-{{ coin }}"
+    #box
+    [value]="this[coin]()"
+    [disabled]="disabled()"
+    [attr.aria-label]="labels[coin] | translate"
+    [title]="labels[coin] | translate"
+    (input)="onInput(coin, box)"
+    (blur)="onBlur()"
+  />
+  <img src="assets/img/money/{{ coin }}.gif" alt="" class="money-icon" />
+}

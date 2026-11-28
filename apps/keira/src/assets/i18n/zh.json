@@ -39,7 +39,12 @@
   "CANCEL": "取消",
   "SELECTORS": {
     "ENABLED": "启用",
-    "DISABLED": "禁用"
+    "DISABLED": "禁用",
+    "MONEY": {
+      "GOLD": "金币",
+      "SILVER": "银币",
+      "COPPER": "铜币"
+    }
   },
   "CONNECTION_WINDOW": {
     "HOST": "主机",

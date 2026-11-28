@@ -7,6 +7,7 @@ import {
   FactionSelectorBtnComponent,
   FlagsSelectorBtnComponent,
   ItemSelectorBtnComponent,
+  MoneyInputComponent,
   QuestFactionSelectorBtnComponent,
   SingleValueSelectorBtnComponent,
   SpellSelectorBtnComponent,
@@ -37,6 +38,7 @@ import { QuestTemplateService } from './quest-template.service';
     FactionSelectorBtnComponent,
     SpellSelectorBtnComponent,
     QuestFactionSelectorBtnComponent,
+    MoneyInputComponent,
     QuestPreviewComponent,
   ],
 })

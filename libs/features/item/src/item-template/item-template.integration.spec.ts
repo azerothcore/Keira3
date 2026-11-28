@@ -259,6 +259,19 @@ describe('ItemTemplate integration tests', () => {
       page.expectFullQueryToContain('22');
     });
 
+    it('changing a value via the gold, silver and copper boxes should correctly work', async () => {
+      const { page } = setup(false);
+      await tickAsync();
+      const box = (coin: string) => page.query<HTMLInputElement>(`#BuyPrice input.money-${coin}`);
+
+      page.setInputValue(box('gold'), 21);
+      page.setInputValue(box('silver'), 59);
+      page.setInputValue(box('copper'), 37);
+      await page.whenReady();
+
+      page.expectDiffQueryToContain('UPDATE `item_template` SET `BuyPrice` = 215937 WHERE (`entry` = 1234);');
+    });
+
     it.skip('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       await tickAsync();

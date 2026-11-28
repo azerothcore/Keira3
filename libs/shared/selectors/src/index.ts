@@ -86,3 +86,5 @@ export * from './selectors/options-selector/options-selector.model';
 export * from './selectors/options-selector/options-selector.service';
 export * from './selectors/options-selector/options-selector-modal.component';
 export * from './selectors/options-selector/options-selector-btn.component';
+
+export * from './selectors/money-input/money-input.component';

@@ -39,7 +39,12 @@
   "CANCEL": "Cancelar",
   "SELECTORS": {
     "ENABLED": "Habilitado",
-    "DISABLED": "Deshabilitado"
+    "DISABLED": "Deshabilitado",
+    "MONEY": {
+      "GOLD": "Oro",
+      "SILVER": "Plata",
+      "COPPER": "Cobre"
+    }
   },
   "CONNECTION_WINDOW": {
     "HOST": "Servidor",
