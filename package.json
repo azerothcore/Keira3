@@ -145,6 +145,9 @@
     "@nx/nx-win32-x64-msvc": "23.3.3"
   },
   "overrides": {
+    "nx": {
+      "undici": "7.30.2"
+    },
     "ngx-select-ex": {
       "@angular/common": "$@angular/common",
       "@angular/core": "$@angular/core"

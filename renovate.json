@@ -28,6 +28,11 @@
       "enabled": false
     },
     {
+      "matchPackageNames": ["jquery", "@types/jquery"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
       "matchPackageNames": ["ngx-bootstrap"],
       "groupName": "ngx-bootstrap (patched via patch-package)",
       "automerge": false
