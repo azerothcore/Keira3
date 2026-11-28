@@ -13,27 +13,27 @@ import { instance, mock } from 'ts-mockito';
 import { CreatureHandlerService } from '../creature-handler.service';
 import { SaiCreatureHandlerService } from '../sai-creature-handler.service';
 import { CreatureFormationsComponent } from './creature-formations.component';
+import { CreatureFormationsService } from './creature-formations.service';
 
 class CreatureFormationPage extends MultiRowEditorPageObject<CreatureFormationsComponent> {}
 
 describe('CreatureFormations integration tests', () => {
-  const memberGUID = 1234;
+  const id = 11043;
+  const leaderGUID = 52141;
 
   const originalRow0 = new CreatureFormation();
   const originalRow1 = new CreatureFormation();
   const originalRow2 = new CreatureFormation();
-  originalRow0.memberGUID = 1234;
-  originalRow1.memberGUID = 1235;
-  originalRow2.memberGUID = 1236;
+  originalRow0.leaderGUID = leaderGUID;
+  originalRow1.leaderGUID = leaderGUID;
+  originalRow2.leaderGUID = leaderGUID;
+  originalRow0.memberGUID = leaderGUID;
+  originalRow1.memberGUID = 54169;
+  originalRow2.memberGUID = 54225;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ToastrModule.forRoot(),
-        ModalDirective,
-        CreatureFormationsComponent, // This should typically be in declarations, but as per your instruction, it's left unchanged
-        TranslateTestingModule,
-      ],
+      imports: [ToastrModule.forRoot(), ModalDirective, CreatureFormationsComponent, TranslateTestingModule],
       providers: [
         provideRouter([]),
         provideZonelessChangeDetection(),
@@ -47,19 +47,21 @@ describe('CreatureFormations integration tests', () => {
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(CreatureHandlerService);
-    handlerService['_selected'] = `${memberGUID}`;
+    handlerService['_selected'] = `${id}`;
     handlerService.isNew = creatingNew;
 
     const queryService = TestBed.inject(MysqlQueryService);
     const querySpy = vi.spyOn(queryService, 'query').mockReturnValue(of([]));
 
-    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    const selectQuerySpy = vi
+      .spyOn(TestBed.inject(CreatureFormationsService), 'selectQuery')
+      .mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
 
     const fixture = TestBed.createComponent(CreatureFormationsComponent);
     const page = new CreatureFormationPage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-    return { fixture, queryService, querySpy, handlerService, page };
+    return { fixture, queryService, querySpy, selectQuerySpy, handlerService, page };
   }
 
   describe('Creating new', () => {
@@ -92,11 +94,11 @@ describe('CreatureFormations integration tests', () => {
     it('adding new rows and executing the query should correctly work', () => {
       const { querySpy, page } = setup(true);
       const expectedQuery =
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1234) AND (`memberGUID` IN (0, 1, 2));\n' +
+        'DELETE FROM `creature_formations` WHERE (`memberGUID` IN (0, 1, 2));\n' +
         'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-        '(1234, 0, 0, 0, 0, 0, 0),\n' +
-        '(1234, 1, 0, 0, 0, 0, 0),\n' +
-        '(1234, 2, 0, 0, 0, 0, 0);';
+        '(0, 0, 0, 0, 0, 0, 0),\n' +
+        '(0, 1, 0, 0, 0, 0, 0),\n' +
+        '(0, 2, 0, 0, 0, 0, 0);';
       querySpy.mockClear();
 
       page.addNewRow();
@@ -114,146 +116,37 @@ describe('CreatureFormations integration tests', () => {
 
     it('adding a row and changing its values should correctly update the queries', () => {
       const { querySpy, page } = setup(true);
-      // Add a new row
       page.addNewRow();
-
-      // Initial DELETE and INSERT queries after adding a new row
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1234) AND (`memberGUID` IN (0));\n' +
+        'DELETE FROM `creature_formations` WHERE (`memberGUID` IN (0));\n' +
           'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1234, 0, 0, 0, 0, 0, 0);`,
+          '(0, 0, 0, 0, 0, 0, 0);',
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1234);\n' +
+        'DELETE FROM `creature_formations` WHERE (`memberGUID` IN (0));\n' +
           'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1234, 0, 0, 0, 0, 0, 0);`,
+          '(0, 0, 0, 0, 0, 0, 0);',
       );
-
-      // Reset the spy before making further changes
       querySpy.mockClear();
 
-      // Modify the memberGUID to 1235
-      page.setInputValueById('leaderGUID', '1235');
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1235) AND (`memberGUID` IN (0));\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1235, 0, 0, 0, 0, 0, 0);`,
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1235);\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1235, 0, 0, 0, 0, 0, 0);`,
-      );
-
-      // Modify the leaderGUID to 1236
       page.setInputValueById('leaderGUID', '1236');
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236) AND (`memberGUID` IN (0));\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 0, 0, 0, 0, 0, 0);`,
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236);\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 0, 0, 0, 0, 0, 0);`,
-      );
-
-      // Modify the memberGUID to 1236
       page.setInputValueById('memberGUID', '1236');
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236) AND (`memberGUID` IN (1236));\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 1236, 0, 0, 0, 0, 0);`,
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236);\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 1236, 0, 0, 0, 0, 0);`,
-      );
-
-      // Modify the distance (dist) to 10
       page.setInputValueById('dist', '10');
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236) AND (`memberGUID` IN (1236));\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 1236, 10, 0, 0, 0, 0);`,
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236);\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 1236, 10, 0, 0, 0, 0);`,
-      );
-
-      // Modify the angle to 45
       page.setInputValueById('angle', '45');
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236) AND (`memberGUID` IN (1236));\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 1236, 10, 45, 0, 0, 0);`,
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236);\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 1236, 10, 45, 0, 0, 0);`,
-      );
-
-      // Modify the groupAI to 1
       page.setInputValueById('groupAI', '1');
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236) AND (`memberGUID` IN (1236));\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 1236, 10, 45, 1, 0, 0);`,
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236);\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 1236, 10, 45, 1, 0, 0);`,
-      );
-
-      // Modify point_1 to 100
       page.setInputValueById('point_1', '100');
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236) AND (`memberGUID` IN (1236));\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 1236, 10, 45, 1, 100, 0);`,
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236);\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 1236, 10, 45, 1, 100, 0);`,
-      );
-
-      // Modify point_2 to 200
       page.setInputValueById('point_2', '200');
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236) AND (`memberGUID` IN (1236));\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 1236, 10, 45, 1, 100, 200);`,
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236);\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          `(1236, 1236, 10, 45, 1, 100, 200);`,
-      );
 
-      // Define the final expected query after all modifications
-      const finalExpectedQuery =
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1236) AND (`memberGUID` IN (1236));\n' +
+      const expectedQuery =
+        'DELETE FROM `creature_formations` WHERE (`memberGUID` IN (1236));\n' +
         'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-        `(1236, 1236, 10, 45, 1, 100, 200);`;
+        '(1236, 1236, 10, 45, 1, 100, 200);';
+      page.expectDiffQueryToContain(expectedQuery);
+      page.expectFullQueryToContain(expectedQuery);
 
-      // Reset the spy before executing the final query
-      querySpy.mockClear();
-
-      // Ensure the final query is as expected
-      page.expectDiffQueryToContain(finalExpectedQuery);
-
-      // Execute the query
       page.clickExecuteQuery();
-
-      // Verify that the querySpy was called correctly
       expect(querySpy).toHaveBeenCalledTimes(1);
-      expect(querySpy.mock.calls.at(-1)[0]).toContain(finalExpectedQuery);
+      expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
     });
 
     it('adding a row changing its values and duplicate it should correctly update the queries', () => {
@@ -264,33 +157,29 @@ describe('CreatureFormations integration tests', () => {
       page.setInputValueById('angle', '2.2');
       page.duplicateSelectedRow();
 
-      page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1234) AND (`memberGUID` IN (0, 1));\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          '(1234, 0, 0, 2.2, 0, 1, 2),\n' +
-          '(1234, 1, 0, 2.2, 0, 1, 2);',
-      );
-      page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 1234);\n' +
-          'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          '(1234, 0, 0, 2.2, 0, 1, 2),\n' +
-          '(1234, 1, 0, 2.2, 0, 1, 2);',
-      );
+      const expectedQuery =
+        'DELETE FROM `creature_formations` WHERE (`memberGUID` IN (0, 1));\n' +
+        'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
+        '(0, 0, 0, 2.2, 0, 1, 2),\n' +
+        '(0, 1, 0, 2.2, 0, 1, 2);';
+      page.expectDiffQueryToContain(expectedQuery);
+      page.expectFullQueryToContain(expectedQuery);
     });
   });
 
   describe('Editing existing', () => {
-    it('should correctly initialise', () => {
-      const { page } = setup(false);
+    it('should load the formations of the spawns of the selected creature', () => {
+      const { selectQuerySpy, page } = setup(false);
+      expect(selectQuerySpy).toHaveBeenCalledWith(`${id}`);
       expect(page.formError.hidden).toBe(true);
       page.expectDiffQueryToBeShown();
       page.expectDiffQueryToBeEmpty();
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 0);\n' +
+        'DELETE FROM `creature_formations` WHERE (`memberGUID` IN (52141, 54169, 54225));\n' +
           'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          '(0, 1234, 0, 0, 0, 0, 0),\n' +
-          '(0, 1235, 0, 0, 0, 0, 0),\n' +
-          '(0, 1236, 0, 0, 0, 0, 0);',
+          '(52141, 52141, 0, 0, 0, 0, 0),\n' +
+          '(52141, 54169, 0, 0, 0, 0, 0),\n' +
+          '(52141, 54225, 0, 0, 0, 0, 0);',
       );
       expect(page.getEditorTableRowsCount()).toBe(3);
     });
@@ -299,26 +188,26 @@ describe('CreatureFormations integration tests', () => {
       const { page } = setup(false);
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(2);
-      page.expectDiffQueryToContain('DELETE FROM `creature_formations` WHERE (`leaderGUID` = 0) AND (`memberGUID` IN (1235))');
+      page.expectDiffQueryToContain('DELETE FROM `creature_formations` WHERE (`memberGUID` IN (54169));');
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 0);\n' +
+        'DELETE FROM `creature_formations` WHERE (`memberGUID` IN (52141, 54225));\n' +
           'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          '(0, 1234, 0, 0, 0, 0, 0),\n' +
-          '(0, 1236, 0, 0, 0, 0, 0);\n',
+          '(52141, 52141, 0, 0, 0, 0, 0),\n' +
+          '(52141, 54225, 0, 0, 0, 0, 0);',
       );
 
       page.deleteRow(1);
       expect(page.getEditorTableRowsCount()).toBe(1);
-      page.expectDiffQueryToContain('DELETE FROM `creature_formations` WHERE (`leaderGUID` = 0) AND (`memberGUID` IN (1235, 1236));\n');
+      page.expectDiffQueryToContain('DELETE FROM `creature_formations` WHERE (`memberGUID` IN (54169, 54225));');
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 0);\n' +
+        'DELETE FROM `creature_formations` WHERE (`memberGUID` IN (52141));\n' +
           'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          '(0, 1234, 0, 0, 0, 0, 0);',
+          '(52141, 52141, 0, 0, 0, 0, 0);',
       );
 
       page.deleteRow(0);
       expect(page.getEditorTableRowsCount()).toBe(0);
-      page.expectDiffQueryToContain('DELETE FROM `creature_formations` WHERE `leaderGUID` = 0;');
+      page.expectDiffQueryToContain('DELETE FROM `creature_formations` WHERE (`memberGUID` IN (52141, 54169, 54225));');
       page.expectFullQueryToBeEmpty();
     });
 
@@ -331,17 +220,17 @@ describe('CreatureFormations integration tests', () => {
       page.setInputValueById('angle', 2);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 0) AND (`memberGUID` IN (1235, 1236));\n' +
+        'DELETE FROM `creature_formations` WHERE (`memberGUID` IN (54169, 54225));\n' +
           'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          '(0, 1235, 1, 0, 0, 0, 0),\n' +
-          '(0, 1236, 0, 2, 0, 0, 0);',
+          '(52141, 54169, 1, 0, 0, 0, 0),\n' +
+          '(52141, 54225, 0, 2, 0, 0, 0);',
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 0);\n' +
+        'DELETE FROM `creature_formations` WHERE (`memberGUID` IN (52141, 54169, 54225));\n' +
           'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          '(0, 1234, 0, 0, 0, 0, 0),\n' +
-          '(0, 1235, 1, 0, 0, 0, 0),\n' +
-          '(0, 1236, 0, 2, 0, 0, 0);',
+          '(52141, 52141, 0, 0, 0, 0, 0),\n' +
+          '(52141, 54169, 1, 0, 0, 0, 0),\n' +
+          '(52141, 54225, 0, 2, 0, 0, 0);',
       );
     });
 
@@ -349,6 +238,8 @@ describe('CreatureFormations integration tests', () => {
       const { page } = setup(false);
       page.addNewRow();
       expect(page.getEditorTableRowsCount()).toBe(4);
+      page.setInputValueById('leaderGUID', leaderGUID);
+      page.setInputValueById('memberGUID', 54232);
 
       page.clickRowOfDatatable(1);
       page.setInputValueById('dist', 10);
@@ -358,24 +249,24 @@ describe('CreatureFormations integration tests', () => {
       expect(page.getEditorTableRowsCount()).toBe(3);
 
       page.expectDiffQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 0) AND (`memberGUID` IN (1235, 1236, 0));\n' +
+        'DELETE FROM `creature_formations` WHERE (`memberGUID` IN (54169, 54225, 54232));\n' +
           'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          '(0, 1235, 10, 0, 0, 0, 0),\n' +
-          '(1234, 0, 0, 0, 0, 0, 0);',
+          '(52141, 54169, 10, 0, 0, 0, 0),\n' +
+          '(52141, 54232, 0, 0, 0, 0, 0);',
       );
       page.expectFullQueryToContain(
-        'DELETE FROM `creature_formations` WHERE (`leaderGUID` = 0);\n' +
+        'DELETE FROM `creature_formations` WHERE (`memberGUID` IN (52141, 54169, 54232));\n' +
           'INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, `groupAI`, `point_1`, `point_2`) VALUES\n' +
-          '(0, 1234, 0, 0, 0, 0, 0),\n' +
-          '(0, 1235, 10, 0, 0, 0, 0),\n' +
-          '(1234, 0, 0, 0, 0, 0, 0);',
+          '(52141, 52141, 0, 0, 0, 0, 0),\n' +
+          '(52141, 54169, 10, 0, 0, 0, 0),\n' +
+          '(52141, 54232, 0, 0, 0, 0, 0);',
       );
     });
 
     it('using the same row id for multiple rows should correctly show an error', () => {
       const { page } = setup(false);
       page.clickRowOfDatatable(2);
-      page.setInputValueById('memberGUID', 1234); // Replaced 0 with 1234
+      page.setInputValueById('memberGUID', leaderGUID);
 
       page.expectUniqueError();
     });
