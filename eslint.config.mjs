@@ -3,6 +3,9 @@ import angularTemplate from '@angular-eslint/eslint-plugin-template';
 import angularTemplateParser from '@angular-eslint/template-parser';
 import nx from '@nx/eslint-plugin';
 import typescript from '@typescript-eslint/eslint-plugin';
+import angularEslint from 'angular-eslint';
+
+const rulesOf = (configs) => Object.assign({}, ...configs.map((config) => config.rules));
 
 // project configs extend this one. Nx passes them via --config from the workspace root,
 // so their `ignores` patterns need a **/ prefix to match files inside the project
@@ -44,7 +47,7 @@ export default [
     plugins: { '@angular-eslint': angular },
     processor: angularTemplate.processors['extract-inline-html'],
     rules: {
-      ...angular.configs.recommended.rules,
+      ...rulesOf(angularEslint.configs.tsRecommended),
       '@angular-eslint/component-selector': [
         'error',
         {
@@ -91,7 +94,7 @@ export default [
     languageOptions: { parser: angularTemplateParser },
     plugins: { '@angular-eslint/template': angularTemplate },
     rules: {
-      ...angularTemplate.configs.recommended.rules,
+      ...rulesOf(angularEslint.configs.templateRecommended),
     },
   },
   {
