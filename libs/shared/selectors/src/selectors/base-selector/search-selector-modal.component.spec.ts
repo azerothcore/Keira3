@@ -24,16 +24,53 @@ describe('SearchSelectorModalComponent', () => {
     }).compileComponents();
   });
 
-  const setup = () => {
+  const setup = (value?: string | number) => {
     const searchService = TestBed.inject(ItemSearchService);
     searchService.query = '--mock query';
+    const onSearchSpy = vi.spyOn(searchService, 'onSearch').mockImplementation(() => undefined);
 
     const fixture = TestBed.createComponent(ItemSelectorModalComponent);
     const component = fixture.componentInstance;
+    if (value !== undefined) {
+      // set by BsModalService through initialState before the first change detection
+      component.value = value;
+    }
     fixture.detectChanges();
 
-    return { searchService, fixture, component };
+    const entryInput = (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>('input#entry') as HTMLInputElement;
+    const nameInput = (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>('input#name') as HTMLInputElement;
+
+    return { searchService, fixture, component, onSearchSpy, entryInput, nameInput };
   };
+
+  it('should prefill the id field with the current value and search it on open', () => {
+    const { searchService, onSearchSpy, entryInput, nameInput } = setup(1907);
+
+    expect(entryInput.value).toEqual('1907');
+    expect(nameInput.value).toEqual('');
+    expect(searchService.fields.getRawValue()).toEqual({ entry: 1907, name: null });
+    expect(onSearchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should clear the filters of a previous search when prefilling the id field', () => {
+    TestBed.inject(ItemSearchService).fields.setValue({ entry: null, name: 'Sword' } as any);
+
+    const { onSearchSpy, entryInput, nameInput } = setup(1907);
+
+    expect(entryInput.value).toEqual('1907');
+    expect(nameInput.value).toEqual('');
+    expect(onSearchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([undefined, 0, -12345, ''])('should not prefill nor search when the current value is %s', (value) => {
+    TestBed.inject(ItemSearchService).fields.setValue({ entry: null, name: 'Sword' } as any);
+
+    const { onSearchSpy, entryInput, nameInput } = setup(value);
+
+    expect(entryInput.value).toEqual('');
+    expect(nameInput.value).toEqual('Sword');
+    expect(onSearchSpy).not.toHaveBeenCalled();
+  });
 
   it('onSelect() should correctly work', () => {
     const { component } = setup();
@@ -48,7 +85,6 @@ describe('SearchSelectorModalComponent', () => {
 
   it('onSearch() should call searchService.onSearch()', () => {
     const { searchService, component } = setup();
-    vi.spyOn(searchService, 'onSearch').mockImplementation(() => undefined);
 
     component.onSearch();
 
