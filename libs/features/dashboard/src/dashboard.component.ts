@@ -56,7 +56,7 @@ export class DashboardComponent extends SubscriptionHandler implements OnInit {
             this.coreVersions = data[0];
             this.commitUrl = this.getCommitUrl(this.coreVersions.core_revision);
 
-            /* istanbul ignore next */
+            /* v8 ignore next */
             if (!this.coreVersions.db_version.startsWith('ACDB') || !this.coreVersions.core_version.startsWith('AzerothCore')) {
               this.wrongEmuWarning = true;
             }

@@ -15,7 +15,7 @@ export class SqliteQueryService extends BaseQueryService {
   private itemDisplayIdCache: Observable<string | null>[] = [];
   private spellDisplayIdCache: Observable<string | null>[] = [];
 
-  /* istanbul ignore next */ // Note: will be tested in e2e
+  /* v8 ignore next -- Note: will be tested in e2e */
   query<T extends TableRow>(queryString: string, silent = false): Observable<T[]> {
     return this.sqliteService.dbQuery<T>(queryString).pipe(
       tap((val) => {

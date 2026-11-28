@@ -1,4 +1,4 @@
-/* istanbul ignore file */ // TODO: fix coverage
+/* v8 ignore file -- TODO: fix coverage */
 import { ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -54,7 +54,7 @@ export class LootEditorComponent<T extends LootTemplate> extends SubscriptionHan
 
   // TODO: this component was originally meant to avoid duplicating code
   //  but because of it now we need this duplication. Consider refactoring the architecture.
-  /* istanbul ignore next */
+  /* v8 ignore next */
   ngOnInit(): void {
     this.subscriptions.push(
       this.editorService.form.valueChanges.pipe(debounceTime(200), distinctUntilChanged(compareObjFn)).subscribe(() => {

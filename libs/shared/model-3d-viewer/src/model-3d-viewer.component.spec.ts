@@ -83,17 +83,29 @@ describe('Model3DViewerComponent', () => {
       expect(show3DmodelSpy).toHaveBeenCalledTimes(0);
     });
 
-    it('should call show3Dmodel if jQuery is present and displayId changed', (done) => {
+    it('should call show3Dmodel if jQuery is present and displayId changed', async () => {
       const { component, fixture } = setup();
       (component as any).windowRef.jQuery = () => {};
       fixture.componentRef.setInput('displayId', 2);
       fixture.componentRef.setInput('viewerType', VIEWER_TYPE.NPC);
+      const show3DmodelSpy = vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => undefined);
 
-      vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => {
-        expect(true).toBe(true);
-        done();
-      });
       component.ngOnChanges({ displayId: { currentValue: 2, previousValue: 1 } as any });
+
+      await vi.waitFor(() => expect(show3DmodelSpy).toHaveBeenCalled());
+    });
+
+    it('should not call show3Dmodel if jQuery is present but displayId did not change', () => {
+      const { component } = setup();
+      (component as any).windowRef.jQuery = () => {};
+      const show3DmodelSpy = vi.spyOn<any>(component, 'show3Dmodel').mockImplementation(() => undefined);
+      vi.useFakeTimers();
+
+      component.ngOnChanges({ displayId: { currentValue: 2, previousValue: 2 } as any });
+      vi.runOnlyPendingTimers();
+      vi.useRealTimers();
+
+      expect(show3DmodelSpy).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -136,7 +148,7 @@ describe('Model3DViewerComponent', () => {
       expect(component['generate3Dmodel']).toHaveBeenCalledTimes(1);
     });
 
-    it('handles the item 3D model', (done) => {
+    it('handles the item 3D model', () => {
       const { component, fixture } = setup();
       fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
       const subscriptionAddSpy = vi.spyOn<any>(component['subscriptions'], 'add').mockImplementation(() => undefined);
@@ -146,11 +158,20 @@ describe('Model3DViewerComponent', () => {
 
       component['show3Dmodel']();
 
-      mockItemData$.subscribe(() => {
-        expect(subscriptionAddSpy).toHaveBeenCalledTimes(1);
-        expect(component['verifyModelAndLoad']).toHaveBeenCalledTimes(1);
-        done();
-      });
+      expect(subscriptionAddSpy).toHaveBeenCalledTimes(1);
+      expect(component['verifyModelAndLoad']).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not load the item 3D model when the item is not found', () => {
+      const { component, fixture } = setup();
+      fixture.componentRef.setInput('viewerType', VIEWER_TYPE.ITEM);
+      vi.spyOn<any>(component['subscriptions'], 'add').mockImplementation(() => undefined);
+      vi.spyOn<any>(component, 'getItemData$').mockReturnValue(of([]));
+      vi.spyOn<any>(component, 'verifyModelAndLoad').mockImplementation(() => undefined);
+
+      component['show3Dmodel']();
+
+      expect(component['verifyModelAndLoad']).toHaveBeenCalledTimes(0);
     });
   });
 

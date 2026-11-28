@@ -266,7 +266,7 @@ export class ItemPreviewService {
   }
 
   private async getLocks(lockId: number): Promise<string[]> {
-    /* istanbul ignore next */
+    /* v8 ignore next */
     if (!lockId) {
       return [''];
     }
@@ -335,12 +335,12 @@ export class ItemPreviewService {
     }
 
     for (const costEntry of rawEntries) {
-      /* istanbul ignore else */
+      /* v8 ignore else */
       if (costEntry.extendedCost) {
         xCostData.push(costEntry.extendedCost);
       }
 
-      /* istanbul ignore next */
+      /* v8 ignore next */
       if (itemz[costEntry.item] && itemz[costEntry.item][costEntry.entry]) {
         itemz[costEntry.item][costEntry.entry] = [costEntry];
       } else {
@@ -351,21 +351,21 @@ export class ItemPreviewService {
     }
 
     if (
-      /* istanbul ignore next */
+      /* v8 ignore next */
       !!xCostData &&
       xCostData.length > 0
     ) {
       xCostData = Array.from(new Set(xCostData)); // filter duplicates
       xCostData = await this.getItemExtendedCost(xCostData);
 
-      /* istanbul ignore else */
+      /* v8 ignore else */
       if (!!xCostData && xCostData.length > 0) {
         // converting xCostData to ARRAY_KEY structure
         for (const xCost of xCostData) {
           xCostDataArr[xCost.id] = xCost;
         }
       } else {
-        /* istanbul ignore next */
+        /* v8 ignore next */
         return [];
       }
     }
@@ -376,20 +376,18 @@ export class ItemPreviewService {
       for (const [l, vendor] of Object.entries<any>(vendors)) {
         for (const [m, vInfo] of Object.entries<any>(vendor)) {
           let costs: any = [];
-          /* istanbul ignore else */
+          /* v8 ignore else */
           if (xCostDataArr[vInfo['extendedCost']] && Object.keys(xCostDataArr[vInfo['extendedCost']]).length > 0) {
             costs = xCostDataArr[vInfo['extendedCost']];
           }
 
           const data: Record<string | number, any> = {
-            stock:
-              vInfo['maxcount'] ??
-              /* istanbul ignore next */
-              -1,
+            /* v8 ignore next */
+            stock: vInfo['maxcount'] ?? -1,
             event: vInfo['eventId'],
-            reqRating: costs ? costs['reqPersonalRating'] : /* istanbul ignore next */ 0,
-            /* istanbul ignore next */
-            reqBracket: costs ? costs['reqArenaSlot'] : /* istanbul ignore next */ 0,
+            reqRating: costs ? costs['reqPersonalRating'] : /* v8 ignore next */ 0,
+            /* v8 ignore next */
+            reqBracket: costs ? costs['reqArenaSlot'] : /* v8 ignore next */ 0,
           };
 
           // hardcode arena(103) & honor(104)
@@ -424,7 +422,7 @@ export class ItemPreviewService {
     }
 
     // convert items to currency if possible
-    /* istanbul ignore else */
+    /* v8 ignore else */
     if (!!cItems) {
       for (const [itemId, vendors] of Object.entries<any>(itemz)) {
         for (const [npcId, costData] of Object.entries<any>(vendors)) {
@@ -461,15 +459,16 @@ export class ItemPreviewService {
           if (
             data[npcId] &&
             costs['reqRating'] &&
-            /* istanbul ignore next */
+            /* v8 ignore start */
             (reqRating.length === 0 || (reqRating && reqRating[0] < costs['reqRating']))
+            /* v8 ignore stop */
           ) {
             reqRating = [costs['reqRating'], costs['reqBracket']];
           }
         }
       }
 
-      /* istanbul ignore next */
+      /* v8 ignore next */
       if (!data) {
         delete result[itemId];
       }
@@ -527,7 +526,7 @@ export class ItemPreviewService {
       }
 
       // secondary damage is set
-      /* istanbul ignore next */
+      /* v8 ignore next */
       if ((dmgmin2 || dmgmax2) && dmgmin2 !== dmgmax2) {
         damageText += ITEM_CONSTANTS.damage.range[sc2 ? 3 : 2]
           .replace('%d', String(dmgmin2))
@@ -647,7 +646,7 @@ export class ItemPreviewService {
 
         pos++;
 
-        /* istanbul ignore else */
+        /* v8 ignore else */
         if (pos === position) {
           piecesIDs.push(p.id);
         }
@@ -805,7 +804,7 @@ export class ItemPreviewService {
       }
 
       // Subclass
-      /* istanbul ignore else */
+      /* v8 ignore else */
       if (itemClass === ITEM_TYPE.ARMOR && subclass > 0) {
         classTmpText += `<th${textRight}><!--asc ${subclass} -->${ITEM_CONSTANTS.armorSubClass[subclass]}</th>`;
       } else if (itemClass === ITEM_TYPE.WEAPON) {
@@ -908,7 +907,7 @@ export class ItemPreviewService {
     if (!!requiredSkill && requiredSkill > 0) {
       let reqSkill = await this.sqliteQueryService.getSkillNameById(requiredSkill);
 
-      /* istanbul ignore else */
+      /* v8 ignore else */
       if (!!reqSkill) {
         if (requiredSkillRank > 0) {
           reqSkill += ` (${requiredSkillRank})`;
@@ -930,7 +929,7 @@ export class ItemPreviewService {
     if (!!requiredFaction && requiredFaction > 0) {
       let reqFaction = await this.sqliteQueryService.getFactionNameByNameId(requiredFaction);
 
-      /* istanbul ignore else */
+      /* v8 ignore else */
       if (!!reqFaction) {
         if (requiredFactionRank > 0) {
           reqFaction += ` (${FACTION_RANK[requiredFactionRank].name})`;
@@ -1017,7 +1016,7 @@ export class ItemPreviewService {
         charges = charges.replace('Charges', 'Charge');
       }
 
-      /* istanbul ignore else */
+      /* v8 ignore else */
       if (!!charges && charges !== '') {
         xMisc.push(`<br><span class="q1">${charges}</span>`);
       }
@@ -1087,7 +1086,7 @@ export class ItemPreviewService {
 
             let gemEnchText = ITEM_CONSTANTS['gemConditions'][gemCndComparator as keyof typeof ITEM_CONSTANTS.gemConditions];
 
-            /* istanbul ignore next */
+            /* v8 ignore next */
             if (!!vspfArgs[0] && !!vspfArgs[1]) {
               gemEnchText = gemEnchText.replace('%s', vspfArgs[0]).replace('%s', vspfArgs[1]);
             }
@@ -1162,9 +1161,9 @@ export class ItemPreviewService {
           const spellTrigger = itemSpellsAndTrigger[Number(spellID)];
           const parsed = await this.sqliteQueryService.getSpellDescriptionById(spellID); // TODO: parseText correctly
 
-          /* istanbul ignore next */
+          /* v8 ignore next */
           if (spellTrigger[0] || parsed || spellTrigger[1]) {
-            /* istanbul ignore next */
+            /* v8 ignore next */
             green.push((trigger[spellTrigger[0]] ?? '') + (parsed ?? '') + ' ' + (trigger[spellTrigger[1]] ?? ''));
           }
         }
@@ -1190,10 +1189,8 @@ export class ItemPreviewService {
     if (this.canTeachSpell(spellId1, spellId2)) {
       const craftSpell = spellId2;
 
-      if (
-        /* istanbul ignore next */
-        !!craftSpell
-      ) {
+      /* v8 ignore else */
+      if (!!craftSpell) {
         // let xCraft = '';
 
         const desc = await this.sqliteQueryService.getSpellDescriptionById(spellId2);

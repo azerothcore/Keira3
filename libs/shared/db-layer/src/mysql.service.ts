@@ -39,7 +39,7 @@ export class MysqlService {
   }
 
   constructor() {
-    /* istanbul ignore next */
+    /* v8 ignore next */
     if (this.electronService.isElectron()) {
       this.mysql = window.require('mysql2');
       this.ssh2 = window.require('ssh2');
@@ -213,16 +213,16 @@ export class MysqlService {
         return;
       }
 
-      /* istanbul ignore next */
+      /* v8 ignore next */
       if (this._connection) {
         // TODO: fix any, see https://github.com/sidorares/node-mysql2/issues/1654
         this._connection.query<any>(queryString, values, this.getQueryCallback<T>(subscriber));
-        /* istanbul ignore else */
+        /* v8 ignore else */
       } else if (
-        /* istanbul ignore next */
+        /* v8 ignore next */
         this.electronService.isElectron()
       ) {
-        /* istanbul ignore next */
+        /* v8 ignore next */
         console.error(`_connection was not defined when trying to run query: ${queryString}`);
       }
     });

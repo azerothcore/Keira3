@@ -12,7 +12,7 @@ export abstract class MultiRowExternalEditorService<T extends TableRow> extends 
 
   override disableEntityIdField() {}
 
-  /* istanbul ignore next */ // TODO: fix coverage
+  /* v8 ignore next -- TODO: fix coverage */
   protected override updateFullQuery(): void {
     this._fullQuery = this.queryService.getFullDeleteInsertQuery<T>(this._entityTable, this._newRows, null, this._entitySecondIdField);
 

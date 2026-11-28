@@ -189,7 +189,7 @@ export class QuestPreviewService {
   }
 
   valueChanges$(delay: number): Observable<void> {
-    /* istanbul ignore next */ // TODO: fix coverage
+    /* v8 ignore next -- TODO: fix coverage */
     return combineLatest([
       this.questTemplateService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),
       this.questRequestItemsService.form.valueChanges.pipe(debounceTime(delay), distinctUntilChanged(compareObjFn)),

@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { IconService, TRADE_ENGINEERING_ICON_ID } from './icon.service';
 import { instance, mock } from 'ts-mockito';
 import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
@@ -79,31 +79,29 @@ describe('IconService', () => {
     expect(service.getIconByItemDisplayId).toHaveBeenCalledTimes(0);
   });
 
-  it('getIconBySpellId() should correctly work [case sqliteQuery return non-null]', (done) => {
+  it('getIconBySpellId() should correctly work [case sqliteQuery return non-null]', async () => {
     const service = TestBed.inject(IconService);
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     const mockIntermediateResult = 'some result';
     vi.spyOn(sqliteQueryService, 'getDisplayIdBySpellId').mockReturnValue(of(mockIntermediateResult));
     vi.spyOn(sqliteQueryService, 'getIconBySpellDisplayId').mockImplementation((displayId) => of(String(displayId)));
 
-    service.getIconBySpellId(mockArgument).subscribe((result) => {
-      expect(result).toEqual(mockResult);
-      done();
-    });
+    const result = await firstValueFrom(service.getIconBySpellId(mockArgument));
+
+    expect(result).toEqual(mockResult);
     expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledWith(mockArgument);
   });
 
-  it('getIconBySpellId() should correctly work [case sqliteQuery return null]', (done) => {
+  it('getIconBySpellId() should correctly work [case sqliteQuery return null]', async () => {
     const service = TestBed.inject(IconService);
     const sqliteQueryService = TestBed.inject(SqliteQueryService);
     vi.spyOn(sqliteQueryService, 'getDisplayIdBySpellId').mockReturnValue(of(undefined));
     vi.spyOn(sqliteQueryService, 'getIconBySpellDisplayId').mockImplementation((displayId) => of(String(displayId)));
 
-    service.getIconBySpellId(mockArgument).subscribe((result) => {
-      expect(result).toEqual(String(TRADE_ENGINEERING_ICON_ID));
-      done();
-    });
+    const result = await firstValueFrom(service.getIconBySpellId(mockArgument));
+
+    expect(result).toEqual(String(TRADE_ENGINEERING_ICON_ID));
     expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledTimes(1);
     expect(sqliteQueryService.getDisplayIdBySpellId).toHaveBeenCalledWith(mockArgument);
   });

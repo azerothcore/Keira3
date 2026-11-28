@@ -136,7 +136,7 @@ export class SidebarComponent {
   toggleSidebar(): void {
     this.sidebarService.setSidebarState(!this.sidebarService.getSidebarState());
 
-    /* istanbul ignore next */
+    /* v8 ignore next */
     setTimeout(() => {
       // fix ngx-datatable(s) size
       window.dispatchEvent(new Event('resize'));

@@ -16,7 +16,7 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
   protected abstract _statusMap: { [key: string]: WritableSignal<boolean> };
   protected abstract readonly mainEditorRoutePath: string;
 
-  /* istanbul ignore next */ // TODO: fix coverage
+  /* v8 ignore next -- TODO: fix coverage */
   get statusMap(): { [key: string]: WritableSignal<boolean> } {
     return this._statusMap;
   }
@@ -25,18 +25,18 @@ export abstract class HandlerService<T extends TableRow> extends SubscriptionHan
     return this._selected;
   }
 
-  /* istanbul ignore next */ // TODO: fix coverage
+  /* v8 ignore next -- TODO: fix coverage */
   get parsedSelected(): { entryorguid: number; source_type: number } {
     return JSON.parse(this.selected);
   }
 
   private resetStatus(): void {
-    /* istanbul ignore next */ // not reachable under normal circumstances
+    /* v8 ignore next -- not reachable under normal circumstances */
     if (!this._statusMap) {
       return; // prevent test error: TypeError: Cannot convert undefined or null to object
     }
 
-    /* istanbul ignore next */ // TODO: fix coverage
+    /* v8 ignore next -- TODO: fix coverage */
     for (const key of Object.keys(this._statusMap)) {
       this._statusMap[key].set(false);
     }

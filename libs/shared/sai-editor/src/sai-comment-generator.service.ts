@@ -137,7 +137,7 @@ export class SaiCommentGeneratorService {
       }
     }
 
-    /* istanbul ignore next */ // TODO: fix coverage?
+    /* v8 ignore next -- TODO: fix coverage? */
     return null;
   }
 

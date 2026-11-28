@@ -33,7 +33,7 @@ export const enum CLASSES {
 
 @Service()
 export class PreviewHelperService {
-  /* istanbul ignore next */ // TODO: fix coverage
+  /* v8 ignore next -- TODO: fix coverage */
   formatMoney(qty: number): string {
     let money = '';
 
@@ -66,7 +66,7 @@ export class PreviewHelperService {
     return null;
   }
 
-  /* istanbul ignore next */ // TODO: fix coverage
+  /* v8 ignore next -- TODO: fix coverage */
   getRaceString(raceMask: number): any[] | null {
     // clamp to available races
     raceMask &= RACE.MASK_ALL;
@@ -85,7 +85,7 @@ export class PreviewHelperService {
     let i = 1;
     while (raceMask) {
       if (raceMask & (1 << (i - 1))) {
-        /* istanbul ignore else */
+        /* v8 ignore else */
         if (!!i) {
           tmp.push(i);
         }
@@ -97,7 +97,7 @@ export class PreviewHelperService {
     return tmp;
   }
 
-  /* istanbul ignore next */ // TODO: fix coverage
+  /* v8 ignore next -- TODO: fix coverage */
   getRequiredClass(classMask: number): number[] | null {
     classMask &= CLASSES.MASK_ALL; // clamp to available classes..
 
@@ -110,7 +110,7 @@ export class PreviewHelperService {
     let i = 1;
     while (classMask) {
       if (classMask & (1 << (i - 1))) {
-        /* istanbul ignore else */
+        /* v8 ignore else */
         if (!!i) {
           tmp.push(i);
         }

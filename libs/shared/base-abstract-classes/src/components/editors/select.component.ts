@@ -1,4 +1,4 @@
-/* istanbul ignore file */ // TODO: fix coverage
+/* v8 ignore file -- TODO: fix coverage */
 import { ChangeDetectorRef, inject } from '@angular/core';
 import { DataTablePageEvent, TableRow } from '@keira/shared/constants';
 import { SelectService } from '../../service/select/select.service';

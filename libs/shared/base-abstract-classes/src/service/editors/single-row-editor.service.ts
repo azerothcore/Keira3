@@ -85,7 +85,7 @@ export abstract class SingleRowEditorService<T extends TableRow> extends EditorS
     this._loading = true;
     for (const field of this.fields) {
       const control = this._form.controls[field];
-      /* istanbul ignore else */
+      /* v8 ignore else */
       if (control) {
         control.setValue(this._originalValue[field]);
       } else {
