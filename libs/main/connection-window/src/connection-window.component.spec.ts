@@ -5,7 +5,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PageObject, Spied, TranslateTestingModule } from '@keira/shared/test-utils';
 import { QueryError } from 'mysql2';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { instance, mock } from 'ts-mockito';
 
 import { KeiraConnectionOptions, MysqlService } from '@keira/shared/db-layer';
@@ -27,6 +27,9 @@ class ConnectionWindowComponentPage extends PageObject<ConnectionWindowComponent
   }
   get databaseInput(): HTMLInputElement {
     return this.query<HTMLInputElement>('#database');
+  }
+  get connectTimeoutInput(): HTMLInputElement {
+    return this.query<HTMLInputElement>('#connect-timeout');
   }
   get connectBtn(): HTMLButtonElement {
     return this.query<HTMLButtonElement>('.connect-button');
@@ -143,6 +146,7 @@ describe('ConnectionWindowComponent', () => {
       user: 'acore',
       password: 'acore',
       database: 'acore_world',
+      connectTimeout: 10000,
       sslEnabled: true,
       sshEnabled: false,
       sshHost: '',
@@ -171,6 +175,7 @@ describe('ConnectionWindowComponent', () => {
       user: 'Helias',
       password: 'helias123',
       database: 'helias_world',
+      connectTimeout: 10000,
       sslEnabled: false,
       sshEnabled: false,
       sshHost: '',
@@ -207,6 +212,7 @@ describe('ConnectionWindowComponent', () => {
       user,
       password,
       database,
+      connectTimeout: 10000,
       sslEnabled: false,
       sshEnabled: false,
       sshHost: '',
@@ -247,6 +253,67 @@ describe('ConnectionWindowComponent', () => {
 
     expect(page.errorElement.innerHTML).toContain(error.stack as string);
     expect(page.errorElement.innerHTML).not.toContain(error.message as string);
+  });
+
+  it('should show an error that arrives after the click, such as a connection timeout', async () => {
+    const { page, connectSpy } = setup();
+    const connection$ = new Subject<void>();
+    connectSpy.mockReturnValue(connection$);
+
+    page.clickElement(page.connectBtn);
+    connection$.error({ code: 'ETIMEDOUT', message: 'connect ETIMEDOUT' } as QueryError);
+    await page.whenStable();
+
+    expect(page.errorElement.innerHTML).toContain('error-box');
+    expect(page.errorElement.innerHTML).toContain('ETIMEDOUT');
+  });
+
+  describe('the connection timeout', () => {
+    it('should send and save the timeout typed by the user', () => {
+      const { page, connectSpy, loginConfigService } = setup();
+
+      expect(page.connectTimeoutInput.value).toBe('10000');
+
+      page.setInputValue(page.connectTimeoutInput, 30000);
+      page.clickElement(page.connectBtn);
+
+      expect(connectSpy).toHaveBeenCalledWith(expect.objectContaining({ connectTimeout: 30000 }));
+      expect(loginConfigService.saveNewConfig).toHaveBeenCalledWith(expect.objectContaining({ connectTimeout: 30000 }));
+    });
+
+    it('should fall back to the default timeout when the field is empty', () => {
+      const { page, connectSpy, loginConfigService } = setup();
+
+      page.setInputValue(page.connectTimeoutInput, '');
+      page.clickElement(page.connectBtn);
+
+      expect(connectSpy).toHaveBeenCalledWith(expect.objectContaining({ connectTimeout: 10000 }));
+      expect(loginConfigService.saveNewConfig).toHaveBeenCalledWith(expect.objectContaining({ connectTimeout: 10000 }));
+      expect(page.connectTimeoutInput.value).toBe('10000');
+    });
+
+    it('should fall back to the default timeout when the value is not positive', () => {
+      const { page, connectSpy } = setup();
+
+      page.setInputValue(page.connectTimeoutInput, 0);
+      page.clickElement(page.connectBtn);
+
+      expect(connectSpy).toHaveBeenCalledWith(expect.objectContaining({ connectTimeout: 10000 }));
+    });
+
+    it('should be restored from the last saved config', async () => {
+      const { page, connectSpy, loginConfigService } = setup(false);
+      loginConfigService.getConfigs.mockReturnValue([{ ...mockConfigsWithPass[1], connectTimeout: 25000 }]);
+
+      page.detectChanges();
+      await page.whenStable();
+
+      expect(page.connectTimeoutInput.value).toBe('25000');
+
+      page.clickElement(page.connectBtn);
+
+      expect(connectSpy).toHaveBeenCalledWith(expect.objectContaining({ connectTimeout: 25000 }));
+    });
   });
 
   describe('the save checkbox', () => {
@@ -300,6 +367,7 @@ describe('ConnectionWindowComponent', () => {
         user: 'Helias',
         password,
         database: 'helias_world',
+        connectTimeout: 10000,
         sslEnabled: false,
         sshEnabled: false,
         sshHost: '',
@@ -315,6 +383,7 @@ describe('ConnectionWindowComponent', () => {
         user: 'Helias',
         password,
         database: 'helias_world',
+        connectTimeout: 10000,
         sslEnabled: false,
         sshEnabled: false,
         sshHost: '',
@@ -341,6 +410,7 @@ describe('ConnectionWindowComponent', () => {
         user: 'Helias',
         password: '',
         database: 'helias_world',
+        connectTimeout: 10000,
         sslEnabled: false,
         sshEnabled: false,
         sshHost: '',
@@ -356,6 +426,7 @@ describe('ConnectionWindowComponent', () => {
         user: 'Helias',
         password: 'helias123',
         database: 'helias_world',
+        connectTimeout: 10000,
         sslEnabled: false,
         sshEnabled: false,
         sshHost: '',

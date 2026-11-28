@@ -16,6 +16,9 @@ import { LoginConfigService } from '@keira/shared/login-config';
 import { SwitchLanguageComponent } from '@keira/shared/switch-language';
 import { ModelForm, SubscriptionHandler } from '@keira/shared/utils';
 
+// mysql2's own default. An empty field would reach mysql2 as null, which turns the timeout off.
+const DEFAULT_CONNECT_TIMEOUT_MS = 10000;
+
 @Component({
   selector: 'keira-connection-window',
   templateUrl: './connection-window.component.html',
@@ -59,6 +62,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
       user: new FormControl<string>('acore') as FormControl<string>,
       password: new FormControl<string>('acore') as FormControl<string>,
       database: new FormControl<string>('acore_world') as FormControl<string>,
+      connectTimeout: new FormControl<number>(DEFAULT_CONNECT_TIMEOUT_MS) as FormControl<number>,
       sslEnabled: new FormControl<boolean>(false) as FormControl<boolean>,
       sshEnabled: new FormControl<boolean>(false) as FormControl<boolean>,
       sshHost: new FormControl<string>('') as FormControl<string>,
@@ -105,6 +109,10 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
   }
 
   onConnect(): void {
+    if (!(Number(this.form.getRawValue().connectTimeout) > 0)) {
+      this.form.patchValue({ connectTimeout: DEFAULT_CONNECT_TIMEOUT_MS });
+    }
+
     const connectionConfig = this.form.getRawValue();
 
     // Add SSL configuration if SSL is enabled
@@ -129,6 +137,7 @@ export class ConnectionWindowComponent extends SubscriptionHandler implements On
         },
         error: (error: QueryError) => {
           this.error = error;
+          this.changeDetectorRef.markForCheck();
         },
       }),
     );

@@ -52,6 +52,8 @@
     "USERNAME": "Username",
     "PASSWORD": "Password",
     "DATABASE": "Database",
+    "CONNECT_TIMEOUT": "Timeout (ms)",
+    "CONNECT_TIMEOUT_TOOLTIP": "How long to wait for the database server to accept the connection, in milliseconds. Default: 10000",
     "USE_SSL": "Use SSL/TLS",
     "SSL_TOOLTIP": "Required for servers with require_secure_transport=ON",
     "USE_SSH_TUNNEL": "SSH Tunnel",
