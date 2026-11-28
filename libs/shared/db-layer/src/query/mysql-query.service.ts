@@ -102,16 +102,17 @@ export class MysqlQueryService extends BaseQueryService {
     return `${query.toString()};`;
   }
 
-  private hasSameRowKey<T extends TableRow>(rowA: T, rowB: T, key: string, extraKey: string | undefined): boolean {
+  private hasSameRowKey<T extends TableRow>(rowA: T, rowB: T, key: string, extraKey: string | string[] | undefined): boolean {
     if (rowA[key] !== rowB[key]) {
       return false;
     }
 
     // Without an extra key, `key` alone identifies the row.
-    return !extraKey || rowA[extraKey] === rowB[extraKey];
+    const extraKeys = !extraKey ? [] : Array.isArray(extraKey) ? extraKey : [extraKey];
+    return extraKeys.every((field) => rowA[field] === rowB[field]);
   }
 
-  private getRow<T extends TableRow>(key: string, object: T, array: T[], extraKey?: string): T | undefined {
+  private getRow<T extends TableRow>(key: string, object: T, array: T[], extraKey?: string | string[]): T | undefined {
     for (let i = 0; i < array.length; i++) {
       if (this.hasSameRowKey(array[i], object, key, extraKey)) {
         return array[i];
@@ -135,7 +136,7 @@ export class MysqlQueryService extends BaseQueryService {
     newRows: T[],
     involvedRows: (string | number)[],
     addedOrEditedRows: T[],
-    extraKey?: string,
+    extraKey?: string | string[],
   ): void {
     for (let i = 0; i < currentRows.length; i++) {
       const row = this.getRow(key, currentRows[i], newRows, extraKey);
@@ -156,7 +157,7 @@ export class MysqlQueryService extends BaseQueryService {
     newRows: T[],
     involvedRows: (string | number)[],
     addedOrEditedRows: T[],
-    extraKey?: string,
+    extraKey?: string | string[],
   ): void {
     for (let i = 0; i < newRows.length; i++) {
       if (!this.getRow(key, newRows[i], currentRows, extraKey)) {
@@ -189,7 +190,8 @@ export class MysqlQueryService extends BaseQueryService {
     primaryKey2: string, // second primary key (example: 'Item')
     currentRows: T[] | undefined, // object of the original rows
     newRows: T[] | undefined, // array of the new rows
-    extraIdField?: string, // third primary key, when `primaryKey2` alone is not unique (example: creature_text 'ID')
+    // further primary key(s), when `primaryKey2` alone is not unique (example: creature_text 'ID')
+    extraIdField?: string | string[],
   ): string {
     if (!newRows || !currentRows) {
       return '';

@@ -42,7 +42,7 @@ describe('CreatureLootTemplate integration tests', () => {
     }).compileComponents();
   });
 
-  function setup(creatingNew: boolean, lootId = id) {
+  function setup(creatingNew: boolean, lootId = id, rows = [originalRow0, originalRow1, originalRow2]) {
     vi.spyOn(TestBed.inject(CreatureLootTemplateService), 'getLootId').mockReturnValue(of([{ lootId }]));
 
     const handlerService = TestBed.inject(CreatureHandlerService);
@@ -55,7 +55,7 @@ describe('CreatureLootTemplate integration tests', () => {
     const itemNamePromise = of(`MockItemName`).toPromise();
     vi.spyOn(queryService, 'getItemNameById').mockReturnValue(itemNamePromise as Promise<string>);
 
-    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalRow0, originalRow1, originalRow2]));
+    vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : rows));
 
     const fixture = TestBed.createComponent(CreatureLootTemplateComponent);
     const page = new CreatureLootTemplatePage(fixture);
@@ -450,6 +450,73 @@ describe('CreatureLootTemplate integration tests', () => {
         const selectorBtn = page.query('keira-item-selector-btn', false);
         expect(selectorBtn).toBeFalsy();
       });
+    });
+  });
+
+  describe('Same Item in several rows (primary key is Entry, Item, Reference, GroupId)', () => {
+    function setupSharedItem() {
+      const rows = [
+        { Item: 0, Reference: 20002, GroupId: 0, Chance: 100 },
+        { Item: 0, Reference: 20002, GroupId: 1, Chance: 30 },
+        { Item: 0, Reference: 11111, GroupId: 0, Chance: 0.2 },
+        { Item: 50432, Reference: 0, GroupId: 0, Chance: 90 },
+      ].map((values) => Object.assign(new CreatureLootTemplate(), { Entry: id }, values));
+      return setup(false, id, rows);
+    }
+
+    it('editing a row should edit that row, not the first one with the same Item', () => {
+      const { page } = setupSharedItem();
+      page.clickRowOfDatatable(1);
+      expect(page.getInputById('GroupId').value).toBe('1');
+
+      page.setInputValueById('Chance', 50);
+
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
+          'INSERT INTO `creature_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 20002, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 0, 20002, 50, 0, 1, 1, 1, 1, ''),\n" +
+          "(1234, 0, 11111, 0.2, 0, 1, 0, 1, 1, '');",
+      );
+    });
+
+    it('deleting a row should keep the other rows with the same Item', () => {
+      const { page } = setupSharedItem();
+      page.deleteRow(2);
+
+      expect(page.getEditorTableRowsCount()).toBe(3);
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (0));\n' +
+          'INSERT INTO `creature_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 0, 20002, 100, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 0, 20002, 30, 0, 1, 1, 1, 1, '');",
+      );
+    });
+
+    it('should allow the same Item in another group', () => {
+      const { page } = setupSharedItem();
+      page.addNewRow();
+      page.setInputValueById('Item', 50432);
+      page.setInputValueById('GroupId', 1);
+
+      expect(page.formError.hidden).toBe(true);
+      page.expectDiffQueryToContain(
+        'DELETE FROM `creature_loot_template` WHERE (`Entry` = 1234) AND (`Item` IN (50432));\n' +
+          'INSERT INTO `creature_loot_template` (`Entry`, `Item`, `Reference`, `Chance`, `QuestRequired`, `LootMode`, `GroupId`, ' +
+          '`MinCount`, `MaxCount`, `Comment`) VALUES\n' +
+          "(1234, 50432, 0, 90, 0, 1, 0, 1, 1, ''),\n" +
+          "(1234, 50432, 0, 100, 0, 1, 1, 1, 1, '');",
+      );
+    });
+
+    it('should show an error when Item, Reference and GroupId all match another row', () => {
+      const { page } = setupSharedItem();
+      page.clickRowOfDatatable(1);
+      page.setInputValueById('GroupId', 0);
+
+      page.expectUniqueError();
     });
   });
 

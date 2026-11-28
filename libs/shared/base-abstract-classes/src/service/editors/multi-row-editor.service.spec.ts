@@ -9,6 +9,7 @@ import { instance, mock } from 'ts-mockito';
 
 import {
   MOCK_EXTRA_ID,
+  MOCK_EXTRA_ID_2,
   MOCK_ID,
   MOCK_ID_2,
   MOCK_NAME,
@@ -16,6 +17,7 @@ import {
   MockEntityExtra,
   MockMultiRowEditorExtraService,
   MockMultiRowEditorService,
+  MockMultiRowEditorTwoExtraService,
   MockMultiRowEditorWithGuidStringService,
 } from '../../core.mock';
 import { EditorService } from './editor.service';
@@ -469,6 +471,74 @@ describe('MultiRowEditorService', () => {
       expect(service['getRowIndex']('9_3')).toEqual(2);
 
       expect(service['getRowIndex']('3_9')).toEqual(0);
+    });
+  });
+  describe('several extra row ids', () => {
+    // Mirrors creature_loot_template: the same secondary key can appear once per combination of the extra keys.
+    function setupTwoExtra(newRows: MockEntity[]) {
+      const service = TestBed.inject(MockMultiRowEditorTwoExtraService);
+      vi.spyOn<any>(service, 'updateDiffQuery').mockImplementation(() => undefined);
+      vi.spyOn<any>(service, 'updateFullQuery').mockImplementation(() => undefined);
+      service['_newRows'] = newRows;
+      return { service };
+    }
+
+    const newRows = [
+      { [MOCK_ID]: 123, [MOCK_ID_2]: 0, [MOCK_NAME]: 'a', [MOCK_EXTRA_ID]: 10, [MOCK_EXTRA_ID_2]: 0 },
+      { [MOCK_ID]: 123, [MOCK_ID_2]: 0, [MOCK_NAME]: 'b', [MOCK_EXTRA_ID]: 10, [MOCK_EXTRA_ID_2]: 1 },
+      { [MOCK_ID]: 123, [MOCK_ID_2]: 0, [MOCK_NAME]: 'c', [MOCK_EXTRA_ID]: 20, [MOCK_EXTRA_ID_2]: 0 },
+    ];
+
+    it('getRowIndex(id) should tell apart rows that only differ by one of the extra keys', () => {
+      const { service } = setupTwoExtra(newRows);
+
+      expect(service['getRowIndex']('0_10_0')).toEqual(0);
+      expect(service['getRowIndex']('0_10_1')).toEqual(1);
+      expect(service['getRowIndex']('0_20_0')).toEqual(2);
+    });
+
+    it('getRowIndex(id) should name every key field when the row is not found', () => {
+      const { service } = setupTwoExtra(newRows);
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+      expect(service['getRowIndex']('0_20_1')).toEqual(0);
+
+      expect(errorSpy).toHaveBeenCalledWith(
+        `getRowIndex() failed in finding row having ${MOCK_ID_2} 0 and ${MOCK_EXTRA_ID} 20 and ${MOCK_EXTRA_ID_2} 1`,
+      );
+    });
+
+    it('onRowSelection() should load the selected row, not the first one with the same secondary key', () => {
+      const { service } = setupTwoExtra(newRows);
+
+      service.onRowSelection({ selected: [newRows[1]] });
+
+      expect(service.selectedRowId).toEqual('0_10_1');
+      expect(service.form.controls[MOCK_NAME].value).toEqual('b');
+      expect(service.isRowSelected(newRows[1])).toBe(true);
+      expect(service.isRowSelected(newRows[0])).toBe(false);
+    });
+
+    it('isFormIdUnique() should only fail when all the key fields match another row', () => {
+      const { service } = setupTwoExtra(newRows);
+      service.onRowSelection({ selected: [newRows[2]] });
+
+      service.form.controls[MOCK_EXTRA_ID_2].setValue(2);
+      expect(service.isFormIdUnique()).toBe(true);
+
+      service.form.controls[MOCK_EXTRA_ID].setValue(10);
+      service.form.controls[MOCK_EXTRA_ID_2].setValue(1);
+      expect(service.isFormIdUnique()).toBe(false);
+    });
+
+    it('editing a row should update only that row', () => {
+      const { service } = setupTwoExtra(newRows.map((row) => ({ ...row })));
+      service.onRowSelection({ selected: [service.newRows[1]] });
+
+      service.form.markAsDirty();
+      service.form.controls[MOCK_NAME].setValue('edited');
+
+      expect(service.newRows.map((row) => row[MOCK_NAME])).toEqual(['a', 'edited', 'c']);
     });
   });
 });

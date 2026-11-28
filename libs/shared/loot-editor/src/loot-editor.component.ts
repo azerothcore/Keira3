@@ -49,7 +49,8 @@ export class LootEditorComponent<T extends LootTemplate> extends SubscriptionHan
   }
 
   get referenceIds(): number[] {
-    return this.editorService.newRows.filter((row) => row.Reference > 0).map((row) => row.Reference);
+    // The same reference can sit in several groups, but its content only needs to be shown once
+    return [...new Set(this.editorService.newRows.filter((row) => row.Reference > 0).map((row) => row.Reference))];
   }
 
   // TODO: this component was originally meant to avoid duplicating code
