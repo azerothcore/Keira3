@@ -2,9 +2,10 @@ import { vi } from 'vitest';
 import { Component, provideZonelessChangeDetection, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideRouter, Router } from '@angular/router';
 
 import { LootTemplate } from '@keira/shared/acore-world-model';
-import { PageObject } from '@keira/shared/test-utils';
+import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { of } from 'rxjs';
 import { ReferenceViewerComponent } from './reference-viewer.component';
@@ -16,6 +17,10 @@ import { instance, mock } from 'ts-mockito';
 class ReferenceViewerComponentPage extends PageObject<TestHostComponent> {
   get referenceViewers() {
     return this.queryAll('keira-reference-viewer');
+  }
+
+  get openReferenceButtons() {
+    return this.queryAll<HTMLButtonElement>('#open-reference-btn');
   }
 }
 
@@ -31,10 +36,11 @@ class TestHostComponent {
 describe('ReferenceViewerComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [TooltipDirective, TestHostComponent, ReferenceViewerComponent],
+      imports: [TooltipDirective, TestHostComponent, ReferenceViewerComponent, TranslateTestingModule],
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
+        provideRouter([]),
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
@@ -63,6 +69,31 @@ describe('ReferenceViewerComponent', () => {
     expect(getReferenceByIdSpy).toHaveBeenCalledWith(id);
     expect(getReferenceByIdSpy).toHaveBeenCalledTimes(3); // because of recursion 1 with mockLootRows, 1 with [], 1 undefined
     expect(page.referenceViewers.length).toEqual(3);
+  });
+
+  describe('open reference button', () => {
+    it('should open the reference in the Reference Loot editor', () => {
+      const { page, host, fixture, service } = setup();
+      host.referenceId = 35009;
+      vi.spyOn(service, 'getReferenceById').mockReturnValue(of([]));
+      const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+      fixture.detectChanges();
+
+      page.clickElement(page.openReferenceButtons[0]);
+
+      expect(navigateSpy).toHaveBeenCalledExactlyOnceWith(['other-loots/select-reference'], {
+        queryParams: { id: 35009 },
+        skipLocationChange: true,
+      });
+    });
+
+    it('should not be shown while the reference is still loading', () => {
+      const { page, host, fixture } = setup();
+      host.referenceId = 35009;
+      fixture.detectChanges();
+
+      expect(page.openReferenceButtons.length).toBe(0);
+    });
   });
 
   describe('Chance calculation logic', () => {
