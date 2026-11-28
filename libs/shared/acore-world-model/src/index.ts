@@ -57,6 +57,7 @@ export * from './entities/creature-default-trainer.type';
 export * from './entities/pickpocketing-loot-template.type';
 export * from './entities/prospecting-loot-template.type';
 export * from './entities/quest-offer-reward.type';
+export * from './entities/quest-offer-reward-locale.type';
 export * from './entities/quest-request-items.type';
 export * from './entities/quest-template-addon.type';
 export * from './entities/quest-template-locale.type';

@@ -70,6 +70,7 @@ import {
   QuestChainComponent,
   QuestHandlerService,
   QuestOfferRewardComponent,
+  QuestOfferRewardLocaleComponent,
   QuestRequestItemsComponent,
   QuestTemplateAddonComponent,
   QuestTemplateLocaleComponent,
@@ -243,6 +244,11 @@ export const KEIRA_ROUTES: Routes = [
       {
         path: 'quest-offer-reward',
         component: QuestOfferRewardComponent,
+        canActivate: [QuestHandlerService],
+      },
+      {
+        path: 'quest-offer-reward-locale',
+        component: QuestOfferRewardLocaleComponent,
         canActivate: [QuestHandlerService],
       },
       {

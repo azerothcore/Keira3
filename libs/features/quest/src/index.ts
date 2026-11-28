@@ -4,6 +4,7 @@ export * from './gameobject-questender/gameobject-questender.component';
 export * from './gameobject-queststarter/gameobject-queststarter.component';
 export * from './quest-chain/quest-chain.component';
 export * from './quest-offer-reward/quest-offer-reward.component';
+export * from './quest-offer-reward-locale/quest-offer-reward-locale.component';
 export * from './quest-preview/quest-preview.component';
 export * from './quest-preview/quest-objectives.component';
 export * from './quest-request-items/quest-request-items.component';
