@@ -7,7 +7,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CreatureTemplate } from '@keira/shared/acore-world-model';
 import { KEIRA_APP_CONFIG_TOKEN, KEIRA_MOCK_CONFIG } from '@keira/shared/config';
-import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
+import { MysqlQueryService, SqliteQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
@@ -65,11 +65,16 @@ describe('CreatureTemplate integration tests', () => {
 
     vi.spyOn(queryService, 'selectAll').mockReturnValue(of(creatingNew ? [] : [originalEntity]));
 
+    const sqliteQueryService = TestBed.inject(SqliteQueryService);
+    const getFactionNameByIdSpy = vi
+      .spyOn(sqliteQueryService, 'getFactionNameById')
+      .mockImplementation((factionId) => Promise.resolve(`Mock Faction ${factionId}`));
+
     const fixture = TestBed.createComponent(CreatureTemplateComponent);
     const page = new CreatureTemplatePage(fixture);
     fixture.autoDetectChanges(true);
     fixture.detectChanges();
-    return { fixture, queryService, querySpy, handlerService, page };
+    return { fixture, queryService, querySpy, handlerService, page, getFactionNameByIdSpy };
   }
 
   describe('Creating new', () => {
@@ -150,6 +155,17 @@ describe('CreatureTemplate integration tests', () => {
       page.clickExecuteQuery();
       expect(querySpy).toHaveBeenCalledTimes(1);
       expect(querySpy.mock.calls.at(-1)[0]).toContain(expectedQuery);
+    });
+
+    it('shows the name of the faction template next to the faction field', async () => {
+      const { page, getFactionNameByIdSpy } = setup(false);
+      await page.whenReady();
+      expect(page.query('#factionName', false)).toBeNull();
+
+      page.setInputValueById('faction', 17);
+
+      await vi.waitFor(() => expect(page.query('#factionName').textContent).toContain('Mock Faction 17'));
+      expect(getFactionNameByIdSpy).toHaveBeenCalledWith(17);
     });
 
     it('changing values should correctly update the queries', () => {

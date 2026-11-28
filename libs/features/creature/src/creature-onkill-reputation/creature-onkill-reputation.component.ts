@@ -1,12 +1,15 @@
 import { Component, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureOnkillReputation, FACTION_RANK } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
-import { BooleanOptionSelectorComponent, FactionSelectorBtnComponent, GenericOptionSelectorComponent } from '@keira/shared/selectors';
+import { SqliteQueryService } from '@keira/shared/db-layer';
+import { BooleanOptionSelectorComponent, GenericOptionSelectorComponent, QuestFactionSelectorBtnComponent } from '@keira/shared/selectors';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { CreatureHandlerService } from '../creature-handler.service';
+import { nameFromControl } from '../utils/name-from-control';
 import { CreatureOnkillReputationService } from './creature-onkill-reputation.service';
 
 @Component({
@@ -20,10 +23,11 @@ import { CreatureOnkillReputationService } from './creature-onkill-reputation.se
     QueryOutputComponent,
     FormsModule,
     ReactiveFormsModule,
-    FactionSelectorBtnComponent,
+    QuestFactionSelectorBtnComponent,
     TooltipDirective,
     BooleanOptionSelectorComponent,
     GenericOptionSelectorComponent,
+    AsyncPipe,
   ],
 })
 export class CreatureOnkillReputationComponent extends SingleRowEditorComponent<CreatureOnkillReputation> {
@@ -31,4 +35,13 @@ export class CreatureOnkillReputationComponent extends SingleRowEditorComponent<
 
   protected override readonly editorService = inject(CreatureOnkillReputationService);
   readonly handlerService = inject(CreatureHandlerService);
+  private readonly sqliteQueryService = inject(SqliteQueryService);
+
+  // RewOnKillRepFaction1/2 are Faction.dbc ids, not FactionTemplate.dbc ids
+  protected readonly faction1Name$ = nameFromControl(this.editorService.form.controls.RewOnKillRepFaction1, (id) =>
+    this.sqliteQueryService.getFactionNameByNameId(id),
+  );
+  protected readonly faction2Name$ = nameFromControl(this.editorService.form.controls.RewOnKillRepFaction2, (id) =>
+    this.sqliteQueryService.getFactionNameByNameId(id),
+  );
 }
