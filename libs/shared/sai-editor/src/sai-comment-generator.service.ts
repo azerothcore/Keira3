@@ -213,12 +213,24 @@ export class SaiCommentGeneratorService {
     if (eventLine.indexOf('_waypointParamTwo_') > -1) {
       eventLine = eventLine.replace('_waypointParamTwo_', smartScript.event_param2 > 0 ? `${smartScript.event_param2}` : 'Any');
     }
+    if (eventLine.indexOf('_escortPathParamTwo_') > -1) {
+      eventLine = eventLine.replace(
+        '_escortPathParamTwo_',
+        smartScript.event_param2 > 0 ? await this.getEscortPathName(smartScript.event_param2) : 'Any',
+      );
+    }
 
     if (eventLine.indexOf('_movementInform_') > -1) {
       eventLine = eventLine.replace('_movementInform_', this.getMovementInformComment(smartScript));
     }
 
     return eventLine;
+  }
+
+  // Escort paths live in the `waypoints` table, where the first point's comment usually names the path
+  private async getEscortPathName(pathId: number): Promise<string> {
+    const comment = await this.queryService.getWaypointPathCommentById(pathId);
+    return comment ? `'${comment}'` : `${pathId}`;
   }
 
   // Naming the motion type (event_param1) keeps it from being read as the point id (event_param2)
@@ -588,6 +600,10 @@ export class SaiCommentGeneratorService {
       }
 
       actionLine = actionLine.replace('_waypointStartActionParamThree_', waypointReplace);
+    }
+
+    if (actionLine.indexOf('_escortPathActionParamTwo_') > -1) {
+      actionLine = actionLine.replace('_escortPathActionParamTwo_', await this.getEscortPathName(smartScript.action_param2));
     }
 
     if (actionLine.indexOf('_movementTypeActionParamOne_') > -1) {

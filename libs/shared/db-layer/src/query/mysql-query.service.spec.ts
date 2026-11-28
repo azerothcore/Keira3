@@ -1219,6 +1219,10 @@ describe('MysqlQueryService', () => {
         name: 'getGameObjectNameByGuid',
         query: `SELECT name AS v FROM gameobject_template AS gt INNER JOIN gameobject AS g ON gt.entry = g.id WHERE g.guid = ${guid}`,
       },
+      {
+        name: 'getWaypointPathCommentById',
+        query: `SELECT point_comment AS v FROM waypoints WHERE entry = ${id} ORDER BY pointid LIMIT 1`,
+      },
       { name: 'getQuestTitleById', query: `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}` },
       { name: 'getItemNameById', query: `SELECT name AS v FROM item_template WHERE entry = ${id}` },
       { name: 'getPrevQuestById', query: `SELECT PrevQuestID AS v FROM quest_template_addon WHERE id = ${id}` },

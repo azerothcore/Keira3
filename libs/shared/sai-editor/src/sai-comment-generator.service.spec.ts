@@ -46,6 +46,9 @@ describe('SaiCommentGeneratorService', () => {
     const mockItemNameById = 'mockItemNameById';
     const mockQuestTitleByCriteria = 'mockQuestTitleByCriteria';
     const mockGetSpellNameById = 'mockGetSpellNameById';
+    const commentedPathId = 1240;
+    const emptyCommentPathId = 1250;
+    const mockWaypointPathComment = 'Test Creature Path';
 
     beforeEach(() => {
       const queryService = TestBed.inject(MysqlQueryService);
@@ -55,6 +58,11 @@ describe('SaiCommentGeneratorService', () => {
       vi.spyOn(queryService, 'getGameObjectNameByGuid').mockImplementation((i) => lastValueFrom(of(mockGameobjectNameByGuid + i)));
       vi.spyOn(queryService, 'getQuestTitleById').mockImplementation((i) => lastValueFrom(of(mockQuestTitleById + i)));
       vi.spyOn(queryService, 'getItemNameById').mockImplementation((i) => lastValueFrom(of(mockItemNameById + i)));
+      vi.spyOn(queryService, 'getWaypointPathCommentById').mockImplementation((i) =>
+        lastValueFrom(
+          of(Number(i) === commentedPathId ? mockWaypointPathComment : Number(i) === emptyCommentPathId ? '' : (null as unknown as string)),
+        ),
+      );
       vi.spyOn(queryService, 'getQuestTitleByCriteria').mockImplementation((i) => lastValueFrom(of(mockQuestTitleByCriteria + i)));
 
       const sqliteQueryService = TestBed.inject(SqliteQueryService);
@@ -1848,6 +1856,70 @@ describe('SaiCommentGeneratorService', () => {
         expected: `MockEntity - On Point Any of Path Any Reached - No Action Type`,
       },
       {
+        name: `SAI_EVENTS.ESCORT_START with a path comment`,
+        input: {
+          event_type: SAI_EVENTS.ESCORT_START,
+          event_param2: commentedPathId,
+        },
+        expected: `MockEntity - On Path 'Test Creature Path' Started - No Action Type`,
+      },
+      {
+        name: `SAI_EVENTS.ESCORT_REACHED with a path comment`,
+        input: {
+          event_type: SAI_EVENTS.ESCORT_REACHED,
+          event_param1: 4,
+          event_param2: commentedPathId,
+        },
+        expected: `MockEntity - On Point 4 of Path 'Test Creature Path' Reached - No Action Type`,
+      },
+      {
+        name: `SAI_EVENTS.ESCORT_REACHED with an empty path comment`,
+        input: {
+          event_type: SAI_EVENTS.ESCORT_REACHED,
+          event_param1: 4,
+          event_param2: emptyCommentPathId,
+        },
+        expected: `MockEntity - On Point 4 of Path 1250 Reached - No Action Type`,
+      },
+      ...[
+        { event_type: SAI_EVENTS.ESCORT_PAUSED, comment: 'Paused' },
+        { event_type: SAI_EVENTS.ESCORT_RESUMED, comment: 'Resumed' },
+        { event_type: SAI_EVENTS.ESCORT_STOPPED, comment: 'Stopped' },
+        { event_type: SAI_EVENTS.ESCORT_ENDED, comment: 'Finished' },
+      ].flatMap(({ event_type, comment }) => [
+        {
+          name: `SAI_EVENTS.ESCORT ${comment} with a path comment`,
+          input: { event_type, event_param2: commentedPathId },
+          expected: `MockEntity - On Path 'Test Creature Path' ${comment} - No Action Type`,
+        },
+        {
+          name: `SAI_EVENTS.ESCORT ${comment} without a path comment`,
+          input: { event_type, event_param2: 124 },
+          expected: `MockEntity - On Path 124 ${comment} - No Action Type`,
+        },
+        {
+          name: `SAI_EVENTS.ESCORT ${comment} on any path`,
+          input: { event_type },
+          expected: `MockEntity - On Path Any ${comment} - No Action Type`,
+        },
+      ]),
+      {
+        name: `SAI_EVENTS.WAYPOINT_REACHED keeps the path id`,
+        input: {
+          event_type: SAI_EVENTS.WAYPOINT_REACHED,
+          event_param1: 4,
+          event_param2: commentedPathId,
+        },
+        expected: `MockEntity - On Point 4 of Path 1240 Reached - No Action Type`,
+      },
+      {
+        name: `SAI_EVENTS.WAYPOINT_REACHED on any path`,
+        input: {
+          event_type: SAI_EVENTS.WAYPOINT_REACHED,
+        },
+        expected: `MockEntity - On Point Any of Path Any Reached - No Action Type`,
+      },
+      {
         name: `SAI_EVENTS.MOVEMENTINFORM`,
         input: {
           event_type: SAI_EVENTS.MOVEMENTINFORM,
@@ -1939,6 +2011,22 @@ describe('SaiCommentGeneratorService', () => {
           action_param3: 123,
         },
         expected: `MockEntity - In Combat - Start [Unknown Value] Path 0`,
+      },
+      {
+        name: `SAI_ACTIONS.ESCORT_START with a path comment`,
+        input: {
+          action_type: SAI_ACTIONS.ESCORT_START,
+          action_param2: commentedPathId,
+        },
+        expected: `MockEntity - In Combat - Start Waypoint Path 'Test Creature Path'`,
+      },
+      {
+        name: `SAI_ACTIONS.ESCORT_START without a path comment`,
+        input: {
+          action_type: SAI_ACTIONS.ESCORT_START,
+          action_param2: 124,
+        },
+        expected: `MockEntity - In Combat - Start Waypoint Path 124`,
       },
       {
         name: `SAI_ACTIONS.SET_MOVEMENT_SPEED`,

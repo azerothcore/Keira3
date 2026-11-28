@@ -393,6 +393,14 @@ export class MysqlQueryService extends BaseQueryService {
     );
   }
 
+  getWaypointPathCommentById(id: string | number): Promise<string> {
+    return this.queryValueToPromiseCached(
+      'getWaypointPathCommentById',
+      String(id),
+      `SELECT point_comment AS v FROM waypoints WHERE entry = ${id} ORDER BY pointid LIMIT 1`,
+    );
+  }
+
   getQuestTitleById(id: string | number): Promise<string> {
     return this.queryValueToPromiseCached('getQuestTitleById', String(id), `SELECT LogTitle AS v FROM quest_template WHERE ID = ${id}`);
   }
