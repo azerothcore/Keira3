@@ -29,7 +29,8 @@ export class CreatureTextService extends MultiRowEditorService<CreatureText> {
 
   /**
    * Fills the selected row from a broadcast_text: both rows describe the same spoken line, so its
-   * id, its language and its wording belong together and are always copied as one.
+   * id, its language and its wording belong together and are always copied as one. The wording also
+   * becomes the comment, so the row stays recognisable in the table and in the generated SQL.
    */
   applyBroadcastText({ ID, LanguageID, Text }: BroadcastTextRow): void {
     if (!this.hasSelectedRow()) {
@@ -37,7 +38,7 @@ export class CreatureTextService extends MultiRowEditorService<CreatureText> {
     }
 
     this._form.markAsDirty();
-    this._form.patchValue({ BroadcastTextId: ID, Language: LanguageID, Text });
+    this._form.patchValue({ BroadcastTextId: ID, Language: LanguageID, Text, comment: Text });
   }
 
   private getNextIdOfGroup(groupId: number): number {
