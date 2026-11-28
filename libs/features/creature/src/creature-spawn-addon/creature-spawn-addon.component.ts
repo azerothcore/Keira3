@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CREATURE_ADDON_BYTES_1, CREATURE_ADDON_BYTES_2, CreatureSpawnAddon, EMOTE } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -11,7 +11,6 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureSpawnAddonService } from './creature-spawn-addon.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-spawn-addon',
   templateUrl: './creature-spawn-addon.component.html',
   styleUrls: ['./creature-spawn-addon.component.scss'],

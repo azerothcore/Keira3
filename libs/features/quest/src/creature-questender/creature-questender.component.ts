@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureQuestender } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -14,7 +14,6 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { CreatureQuestenderService } from './creature-questender.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-questender',
   templateUrl: './creature-questender.component.html',
   styleUrls: ['./creature-questender.component.scss'],

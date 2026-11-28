@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input, output } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input, output } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-components';
 import { DTCFG } from '@keira/shared/config';
@@ -9,7 +9,6 @@ import { BroadcastTextRow } from './broadcast-text-browser.model';
 import { BroadcastTextBrowserService } from './broadcast-text-browser.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-broadcast-text-browser',
   templateUrl: './broadcast-text-browser.component.html',
   imports: [ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslatePipe, TooltipDirective],

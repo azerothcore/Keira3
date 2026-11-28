@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { TitleCasePipe } from '@angular/common';
@@ -40,7 +40,6 @@ import { UnsavedIconComponent } from './unsaved-icon/unsaved-icon.component';
 const animationTime = 200;
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],

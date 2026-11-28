@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-editor-buttons',
   templateUrl: './editor-buttons.component.html',
   imports: [TranslatePipe],

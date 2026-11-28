@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   CREATURE_ADDON_BYTES_1,
@@ -16,7 +16,6 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateAddonService } from './creature-template-addon.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template-addon',
   templateUrl: './creature-template-addon.component.html',
   styleUrls: ['./creature-template-addon.component.scss'],

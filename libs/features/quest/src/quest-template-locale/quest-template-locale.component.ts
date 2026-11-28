@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QUEST_LOCALE, QuestTemplateLocale } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -13,7 +13,6 @@ import { QuestPreviewService } from '../quest-preview/quest-preview.service';
 import { QuestTemplateLocaleService } from './quest-template-locale.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-quest-template-locale',
   templateUrl: './quest-template-locale.component.html',
   imports: [

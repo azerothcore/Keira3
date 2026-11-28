@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   CONDITION_DISTANCE_TO_CV3,
@@ -36,7 +36,6 @@ import {
 import { ConditionsService } from './conditions.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-conditions',
   templateUrl: './conditions.component.html',
   styleUrls: ['./conditions.component.scss'],

@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GossipMenu } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -13,7 +13,6 @@ import { GossipHandlerService } from '../gossip-handler.service';
 import { GossipMenuService } from './gossip-menu.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gossip-menu',
   templateUrl: './gossip-menu.component.html',
   styleUrls: ['./gossip-menu.component.scss'],

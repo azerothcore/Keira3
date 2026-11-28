@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SPELL_DBC_PROC_FLAGS, SPELL_DBC_TARGETS, SpellDbc } from '@keira/shared/acore-world-model';
 import { ModelForm } from '@keira/shared/utils';
@@ -9,7 +9,6 @@ import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { FlagsSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-effects',
   templateUrl: './spell-dbc-effects.component.html',
   imports: [

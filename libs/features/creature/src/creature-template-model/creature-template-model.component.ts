@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatureTemplateModel } from '@keira/shared/acore-world-model';
 import { MultiRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -10,7 +10,6 @@ import { CreatureHandlerService } from '../creature-handler.service';
 import { CreatureTemplateModelService } from './creature-template-model.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-template-model',
   templateUrl: './creature-template-model.component.html',
   styleUrls: ['./creature-template-model.component.scss'],

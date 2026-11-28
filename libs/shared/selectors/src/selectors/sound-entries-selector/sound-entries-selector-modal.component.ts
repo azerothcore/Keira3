@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SOUND_ENTRIES_ID, SoundEntries } from '@keira/shared/acore-world-model';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -9,7 +9,6 @@ import { HighlightjsWrapperComponent } from '@keira/shared/base-editor-component
 import { SoundEntriesSearchService } from '../../search/sound-entries-search.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sound-entries-selector-modal',
   templateUrl: './sound-entries-selector-modal.component.html',
   imports: [FormsModule, ReactiveFormsModule, HighlightjsWrapperComponent, NgxDatatableModule, TranslateDirective, TranslatePipe],

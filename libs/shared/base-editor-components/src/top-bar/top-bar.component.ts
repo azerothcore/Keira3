@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input, input } from '@angular/core';
+import { Component, Input, input } from '@angular/core';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-top-bar',
   templateUrl: './top-bar.component.html',
 })

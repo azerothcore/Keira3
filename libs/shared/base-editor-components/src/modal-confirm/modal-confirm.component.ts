@@ -1,10 +1,9 @@
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { TranslateDirective } from '@ngx-translate/core';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-modal-confirm',
   templateUrl: './modal-confirm.component.html',
   imports: [TranslateDirective],

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { GameobjectLootTemplate } from '@keira/shared/acore-world-model';
 import { LootTemplateIdComponent } from '@keira/shared/base-abstract-classes';
 import { TopBarComponent } from '@keira/shared/base-editor-components';
@@ -9,7 +9,6 @@ import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { GameobjectLootTemplateService } from './gameobject-loot-template.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-gameobject-loot-template',
   templateUrl: './gameobject-loot-template.component.html',
   imports: [TopBarComponent, TranslateDirective, TranslatePipe, LootEditorComponent],

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ITEM_CLASS, SPELL_DBC_INVENTORY_TYPE, SPELL_DBC_ITEM_SUBCLASS, SpellDbc, TOTEM_CATEGORY } from '@keira/shared/acore-world-model';
 import { ModelForm } from '@keira/shared/utils';
@@ -8,7 +8,6 @@ import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { FlagsSelectorBtnComponent, ItemSelectorBtnComponent, SingleValueSelectorBtnComponent } from '@keira/shared/selectors';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc-items',
   templateUrl: './spell-dbc-items.component.html',
   imports: [

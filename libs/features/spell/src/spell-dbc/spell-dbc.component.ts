@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { SpellDbc } from '@keira/shared/acore-world-model';
 import { SpellHandlerService } from '../spell-handler.service';
@@ -16,7 +16,6 @@ import { TranslateDirective } from '@ngx-translate/core';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-dbc',
   templateUrl: './spell-dbc.component.html',
   imports: [

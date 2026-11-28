@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { BroadcastText, BROADCAST_TEXT_CUSTOM_STARTING_ID, BROADCAST_TEXT_TABLE, BROADCAST_TEXT_ID } from '@keira/shared/acore-world-model';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
@@ -9,7 +9,6 @@ import { SelectBroadcastTextService } from './select-broadcast-text.service';
 import { BroadcastTextHandlerService } from './broadcast-text-handler.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-broadcast-text.component.html',
   imports: [
     TopBarComponent,

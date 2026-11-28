@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { LootTemplateComponent } from '@keira/shared/base-abstract-classes';
 import { SpellLootTemplate } from '@keira/shared/acore-world-model';
 import { SpellLootHandlerService } from './spell-loot-handler.service';
@@ -8,7 +8,6 @@ import { TopBarComponent } from '@keira/shared/base-editor-components';
 import { LootEditorComponent } from '@keira/shared/loot-editor';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-spell-loot-template',
   templateUrl: '../../../../shared/base-abstract-classes/src/components/editors/loot-template/loot-template.component.html',
   imports: [TopBarComponent, TranslateDirective, LootEditorComponent],

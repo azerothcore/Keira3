@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SelectComponent } from '@keira/shared/base-abstract-classes';
 import { QUEST_TEMPLATE_CUSTOM_STARTING_ID, QUEST_TEMPLATE_ID, QUEST_TEMPLATE_TABLE, QuestTemplate } from '@keira/shared/acore-world-model';
 import { QuestHandlerService } from '../quest-handler.service';
@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-quest.component.html',
   styleUrls: ['./select-quest.component.scss'],
   imports: [

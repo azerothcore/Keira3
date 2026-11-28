@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AcoreString } from '@keira/shared/acore-world-model';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
@@ -9,7 +9,6 @@ import { AcoreStringService } from './acore-string.service';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './acore-string.component.html',
   imports: [TranslateDirective, TranslatePipe, ReactiveFormsModule, TooltipDirective, QueryOutputComponent, TopBarComponent],
 })

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HandlerService } from '@keira/shared/base-abstract-classes';
 import { TableRow } from '@keira/shared/constants';
@@ -11,7 +11,6 @@ import { map, Observable } from 'rxjs';
 const MAX_INT_UNSIGNED_VALUE = 4294967295;
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-create',
   templateUrl: './create.component.html',
   imports: [TranslateDirective, TranslatePipe, FormsModule],

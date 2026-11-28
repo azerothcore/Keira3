@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SingleRowEditorComponent } from '@keira/shared/base-abstract-classes';
 import { TranslateDirective, TranslatePipe } from '@ngx-translate/core';
 import { QueryOutputComponent, TopBarComponent } from '@keira/shared/base-editor-components';
@@ -9,7 +9,6 @@ import { TooltipDirective } from 'ngx-bootstrap/tooltip';
 import { PageText } from '@keira/shared/acore-world-model';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './page-text.component.html',
   imports: [TopBarComponent, TranslateDirective, TranslatePipe, QueryOutputComponent, ReactiveFormsModule, TooltipDirective],
 })

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SelectComplexKeyComponent } from '@keira/shared/base-abstract-classes';
 import { CONDITION_SOURCE_TYPES, Conditions } from '@keira/shared/acore-world-model';
@@ -12,7 +12,6 @@ import { ConditionsSearchService } from '@keira/shared/selectors';
 import { getEnumKeys } from '@keira/shared/utils';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-conditions.component.html',
   styleUrls: ['./select-conditions.component.scss'],
   imports: [FormsModule, ReactiveFormsModule, TranslateDirective, TranslatePipe, HighlightjsWrapperComponent, NgxDatatableModule],

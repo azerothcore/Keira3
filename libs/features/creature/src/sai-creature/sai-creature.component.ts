@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditorButtonsComponent, QueryOutputComponent } from '@keira/shared/base-editor-components';
 import { SaiEditorComponent, SaiTopBarComponent, TimedActionlistComponent } from '@keira/shared/sai-editor';
@@ -11,7 +11,6 @@ import { SaiCreatureEditorService } from './sai-creature-editor.service';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-sai-creature',
   templateUrl: '../../../../../libs/shared/sai-editor/src/sai-editor.component.html',
   styleUrls: ['../../../../../libs/shared/sai-editor/src/sai-editor.component.scss'],

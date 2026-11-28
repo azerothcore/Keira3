@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, computed } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -26,7 +26,6 @@ import { CreatureSpawnService } from './creature-spawn.service';
 import { MapViewerComponent, MapPoint } from '@keira/shared/map-viewer';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-spawn',
   templateUrl: './creature-spawn.component.html',
   styleUrls: ['./creature-spawn.component.scss'],

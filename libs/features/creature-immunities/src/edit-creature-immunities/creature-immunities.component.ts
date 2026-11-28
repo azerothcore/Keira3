@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   CreatureImmunities,
@@ -18,7 +18,6 @@ import { CreatureImmunitiesCommentService } from './creature-immunities-comment.
 import { CreatureImmunitiesService } from './creature-immunities.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-creature-immunities',
   templateUrl: './creature-immunities.component.html',
   imports: [

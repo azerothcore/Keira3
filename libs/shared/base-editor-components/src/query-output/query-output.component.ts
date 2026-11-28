@@ -1,15 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  computed,
-  EventEmitter,
-  inject,
-  input,
-  Input,
-  Output,
-  signal,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, computed, EventEmitter, inject, input, Input, Output, signal } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { EditorService } from '@keira/shared/base-abstract-classes';
@@ -25,7 +14,6 @@ import { QueryErrorComponent } from './query-error/query-error.component';
 import { QueryError } from 'mysql2';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'keira-query-output',
   templateUrl: './query-output.component.html',
   styleUrls: ['./query-output.component.scss'],
