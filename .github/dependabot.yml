@@ -4,9 +4,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
-    groups:
-      dev-dependencies:
-        dependency-type: development
+    # Renovate handles version updates (see renovate.json); 0 keeps only Dependabot security updates
+    open-pull-requests-limit: 0
     ignore:
       # patched via patch-package, bump by hand (see patches/README.md)
       - dependency-name: ngx-bootstrap
